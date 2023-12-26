@@ -9,7 +9,7 @@ import p5 from "p5"
  * @explodes Defaults to false. If specified, the particles that will emit from the bullet on destruction.
  * @graphic The bullet'team graphic
  */
-interface Bullet {
+export interface Bullet {
   sizeX: RangeConstraint<0, 20>
   sizeY: RangeConstraint<0, 20>
   damage: number
@@ -19,9 +19,9 @@ interface Bullet {
     bulletCount: RangeConstraint<0, 50>
     bulletLifetime: number
   } | Bullet
-  graphic: (p: typeof p5) => void
+  graphic: (p: p5) => void
 }
-interface Particle extends Bullet {};
+export interface Particle extends Bullet {};
 
 /**
  * @name A short name
@@ -40,7 +40,7 @@ interface Particle extends Bullet {};
  * @health How much health the drone has
  * @graphic The drone's graphic
  */
-interface Drone {
+export interface Drone {
   name: string
   description: string
   price: number
