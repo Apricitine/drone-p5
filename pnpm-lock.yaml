@@ -4,6 +4,14 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  '@types/p5':
+    specifier: ^1.7.6
+    version: 1.7.6
+  p5:
+    specifier: ^1.9.0
+    version: 1.9.0
+
 devDependencies:
   typescript:
     specifier: ^5.2.2
@@ -325,6 +333,10 @@ packages:
     dev: true
     optional: true
 
+  /@types/p5@1.7.6:
+    resolution: {integrity: sha512-6pLTOo0V3N5jZb5nTwjiv3lPHLK3Z/TjbhQUj8CTWXocUk1Z/f6OHTp3Pcwi1BhWnf5gqKUcyEb1gP0KIJuQgw==}
+    dev: false
+
   /esbuild@0.19.10:
     resolution: {integrity: sha512-S1Y27QGt/snkNYrRcswgRFqZjaTG5a5xM3EQo97uNBnH505pdzSNe/HLBq1v0RO7iK/ngdbhJB6mDAp0OK+iUA==}
     engines: {node: '>=12'}
@@ -369,6 +381,10 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
+
+  /p5@1.9.0:
+    resolution: {integrity: sha512-+5/hz0ZokCDf7BMMAeemE7FIo7gFZK7ImL62acHLXZwerGjqj+171bnaAWj4aCFCx6fwysAr2U7/AKuPyPhehA==}
+    dev: false
 
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
