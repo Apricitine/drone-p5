@@ -16,8 +16,13 @@ new p5((p: p5) => {
     p.background(255)
 
     p.translate(300, 250)
-    p.scale(130/20)
-    Drones.WeakDrone.graphic(p, p.color(153, 255, 170), 20, p.frameCount)
+    p.scale(13)
+    Drones.BomberPlane.graphic(
+      p, 
+      p.color(153, 255, 170), 
+      Drones.BomberPlane.sizeX, 
+      p.frameCount
+    )
   }
 
 }, document.querySelector("#app") as HTMLElement)
