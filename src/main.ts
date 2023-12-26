@@ -17,7 +17,7 @@ new p5((p: p5) => {
 
     p.translate(300, 250)
     p.scale(130/20)
-    Drones.DumbDrone.graphic(p, "player", 20, p.frameCount)
+    Drones.WeakDrone.graphic(p, p.color(153, 255, 170), 20, p.frameCount)
   }
 
 }, document.querySelector("#app") as HTMLElement)
