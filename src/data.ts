@@ -19,7 +19,7 @@ export interface Bullet {
     bulletCount: RangeConstraint<0, 50>
     bulletLifetime: number
   } | Bullet
-  graphic: (p: p5) => void
+  graphic: (p: p5, color: p5.Color) => void
 }
 export interface Particle extends Bullet {};
 
@@ -106,7 +106,11 @@ export const Bullets: { [key: string]: Bullet } = {
     sizeX: 2,
     sizeY: 2,
     damage: 0.5,
-    graphic() {}
+    graphic(p: p5, color: p5.Color) {
+      p.noStroke()
+      p.fill(color)
+      p.ellipse(0, 0, this.sizeX, this.sizeY)
+    }
   },
   DroneBullet: {
     sizeX: 3,

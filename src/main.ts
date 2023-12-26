@@ -1,5 +1,5 @@
 import p5 from "p5"
-import { Drones } from "./data"
+import { Drones, Bullets, Particles } from "./data"
 import type { Drone, Bullet, Particle } from "./data";
 
 new p5((p: p5) => {
@@ -14,31 +14,40 @@ new p5((p: p5) => {
   }
 
   p.draw = () => {
-    testGraphics(Drones.WeakDrone)
+    testGraphics([Bullets.WeakDroneBullet, Drones.WeakDrone])
+
   }
 
-  const testGraphics = (graphicToTest: Drone | Bullet | Particle, showGrid?: boolean) => {
+  const testGraphics = (
+    graphicToTest: Array<Drone | Bullet | Particle>, 
+    showGrid?: boolean
+  ) => {
     p.background(255)
-
-    p.push()
-      p.translate(300, 300)
-      p.scale(13);
-      graphicToTest.graphic(
-        p,
-        p.color(153, 255, 170),
-        graphicToTest.sizeX,
-        p.frameCount
-      );
+    
+    for (let i = 0; i < graphicToTest.length; i++) {
+      p.push()
+        p.translate(
+          300, 
+          (typeof graphicToTest[i] === typeof Bullets.DroneBullet ? 550 : 300)
+        )
+        p.scale(13);
+        graphicToTest[i].graphic(
+          p,
+          p.color(153, 255, 170),
+          graphicToTest[i].sizeX,
+          p.frameCount
+        );
       p.pop();
+    }
 
-      if (showGrid || showGrid === undefined) {
-        for (let i = 0; i <= 600; i += 50) {
-          p.line(i, 0, i, 600);
-          p.line(0, i, 600, i);
-          p.text(i, i, 10);
-          p.text(i, 10, i);
-        }
+    if (showGrid || showGrid === undefined) {
+      for (let i = 0; i <= 600; i += 50) {
+        p.line(i, 0, i, 600);
+        p.line(0, i, 600, i);
+        p.text(i, i, 10);
+        p.text(i, 10, i);
       }
+    }
   }
 
 }, document.querySelector("#app") as HTMLElement)
