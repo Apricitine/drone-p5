@@ -14,31 +14,29 @@ new p5((p: p5) => {
   }
 
   p.draw = () => {
-    testGraphics([Bullets.WeakDroneBullet, Drones.WeakDrone])
-
+    testGraphics(true, [Drones.Tank, 300], [Bullets.TankBullet, 550])
   }
 
   const testGraphics = (
-    graphicToTest: Array<Drone | Bullet | Particle>, 
-    showGrid?: boolean
+    showGrid?: boolean,
+    ...graphicToTest: Array<[Particle | Bullet | Drone, number]>
   ) => {
     p.background(255)
     
-    for (let i = 0; i < graphicToTest.length; i++) {
+    graphicToTest.forEach((one) => {
       p.push()
         p.translate(
           300, 
-          (typeof graphicToTest[i] === typeof Bullets.DroneBullet ? 550 : 300)
+          one[1]
         )
-        p.scale(13);
-        graphicToTest[i].graphic(
+        p.scale(7);
+        one[0].graphic(
           p,
           p.color(153, 255, 170),
-          graphicToTest[i].sizeX,
           p.frameCount
         );
       p.pop();
-    }
+    })
 
     if (showGrid || showGrid === undefined) {
       for (let i = 0; i <= 600; i += 50) {
@@ -49,5 +47,4 @@ new p5((p: p5) => {
       }
     }
   }
-
 }, document.querySelector("#app") as HTMLElement)

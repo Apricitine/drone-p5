@@ -2,8 +2,8 @@ import type { RangeConstraint } from "./utility"
 import p5 from "p5"
 
 /**
- * @sizeX The x size of the bullet
- * @sizeY The y size of the bullet
+ * @sizeX The x this.sizeX of the bullet
+ * @sizeY The y this.sizeX of the bullet
  * @damage The damage the bullet deals
  * @immune Whether or not the bullet can be destroyed by hitting an enemy
  * @explodes Defaults to false. If specified, the particles that will emit from the bullet on destruction.
@@ -28,8 +28,8 @@ export interface Particle extends Bullet {};
  * @description A short description
  * @price A price ranging from $5-$5000
  * @priority Whether or not this drone should be ignored by enemies
- * @sizeX The drone'team x size
- * @sizeY The drone's y size
+ * @sizeX The drone'team x this.sizeX
+ * @sizeY The drone's y this.sizeX
  * @reloadTime The drone's reload time, can be any value greater than one. Infinity will cause a drone to never fire. Different values may be specified for each bullet
  * @bulletType The drone's type of bullet to fire. Can be any instance of a bullet. Different values may be specified if the drone can shoot multiple bullets
  * @range The drone's range for firing, can range from 0-infinity. Different values may be specified for each bullet
@@ -79,7 +79,7 @@ export interface Drone {
     speed: number
     turnSpeed: number
   }
-  graphic: (p: p5, color: p5.Color, size: number, time: number) => void
+  graphic: (p: p5, color: p5.Color, time: number) => void
 }
 
 /** ALL OF THE PARTICLE DATA **/
@@ -103,8 +103,8 @@ export const Particles: { [key: string]: Particle } = {
 /** ALL OF THE BULLET DATA **/
 export const Bullets: { [key: string]: Bullet } = {
   WeakDroneBullet: {
-    sizeX: 2,
-    sizeY: 2,
+    sizeX: 5,
+    sizeY: 5,
     damage: 0.5,
     graphic(p: p5, color: p5.Color) {
       p.noStroke()
@@ -113,16 +113,24 @@ export const Bullets: { [key: string]: Bullet } = {
     }
   },
   DroneBullet: {
-    sizeX: 3,
-    sizeY: 3,
-    damage: 2,
-    graphic() {}
+    sizeX: 6,
+    sizeY: 6,
+    damage: 1.25,
+    graphic(p: p5, color: p5.Color) {
+      p.noStroke()
+      p.fill(color)
+      p.ellipse(0, 0, this.sizeX, this.sizeY)
+    }
   },
   StrongDroneBullet: {
-    sizeX: 4,
-    sizeY: 4,
+    sizeX: 8,
+    sizeY: 8,
     damage: 7.5,
-    graphic() {}
+    graphic(p: p5, color: p5.Color) {
+      p.noStroke()
+      p.fill(color)
+      p.ellipse(0, 0, this.sizeX, this.sizeY)
+    }
   },
   PlaneBullet: {
     sizeX: 5,
@@ -137,6 +145,16 @@ export const Bullets: { [key: string]: Bullet } = {
     explodes: Particles.ExplosionParticle,
     graphic() {}
   },
+  TankBullet: {
+    sizeX: 10,
+    sizeY: 10,
+    damage: 15,
+    graphic(p: p5, color) {
+      p.noStroke()
+      p.fill(p.lerpColor(color, p.color(0), 0.15))
+      p.ellipse(0, 0, this.sizeX, this.sizeY)
+    },
+  }
 }
 
 /** ALL OF THE DRONE DATA **/
@@ -160,24 +178,24 @@ export const Drones: { [key: string]: Drone } = {
       speed: 2,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, size, time) {
+    graphic(p: p5, color, time) {
       let sf = Math.sin(time / 2);
       let cf = Math.cos(time / 2);
       p.stroke(p.lerpColor(color, p.color(255), 0.6));
       p.strokeWeight(4);
-      p.line(-size*0.25, -size*0.25, size*0.25, size*0.25);
-      p.line(size*0.25, -size*0.25, -size*0.25, size*0.25);
+      p.line(-this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25, this.sizeX*0.25);
+      p.line(this.sizeX*0.25, -this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25);
       p.noStroke();
       p.fill(p.lerpColor(color, p.color(255), 0.6));
-      p.rect(0, 0, size * 0.25, size * 0.5, 50);
+      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50);
       p.fill(p.lerpColor(color, p.color(255), 0.4));
-      p.ellipse(0, 0, size*0.2, size*0.3);
+      p.ellipse(0, 0, this.sizeX*0.2, this.sizeX*0.3);
       p.stroke(p.lerpColor(color, p.color(0), 0.5));
       p.strokeWeight(2);
-      p.line(-size*(0.25 + 0.15*sf), -size*(0.25 + 0.15*cf), -size*(0.25 - 0.15*sf), -size*(0.25 - 0.15*cf));
-      p.line(size*(0.25 + 0.15*sf), -size*(0.25 + 0.15*cf), size*(0.25 - 0.15*sf), -size*(0.25 - 0.15*cf));
-      p.line(-size*(0.25 + 0.15*sf), size*(0.25 + 0.15*cf), -size*(0.25 - 0.15*sf), size*(0.25 - 0.15*cf));
-      p.line(size*(0.25 + 0.15*sf), size*(0.25 + 0.15*cf), size*(0.25 - 0.15*sf), size*(0.25 - 0.15*cf));
+      p.line(-this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
+      p.line(this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
+      p.line(-this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
+      p.line(this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
     }
   },  
   WeakDrone: {
@@ -199,24 +217,24 @@ export const Drones: { [key: string]: Drone } = {
       speed: 1,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, size, time) {
+    graphic(p: p5, color, time) {
       let sf = Math.sin(time / 2);
       let cf = Math.cos(time / 2);
       p.stroke(color);
       p.strokeWeight(4);
-      p.line(-size*0.25, -size*0.25, size*0.25, size*0.25);
-      p.line(size*0.25, -size*0.25, -size*0.25, size*0.25);
+      p.line(-this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25, this.sizeX*0.25);
+      p.line(this.sizeX*0.25, -this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25);
       p.noStroke();
       p.fill(color);
-      p.rect(0, 0, size * 0.25, size * 0.5, 50);
+      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50);
       p.fill(0, 50);
-      p.ellipse(0, 0, size*0.2, size*0.3);
+      p.ellipse(0, 0, this.sizeX*0.2, this.sizeX*0.3);
       p.stroke(0);
       p.strokeWeight(2);
-      p.line(-size*(0.25 + 0.15*sf), -size*(0.25 + 0.15*cf), -size*(0.25 - 0.15*sf), -size*(0.25 - 0.15*cf));
-      p.line(size*(0.25 + 0.15*sf), -size*(0.25 + 0.15*cf), size*(0.25 - 0.15*sf), -size*(0.25 - 0.15*cf));
-      p.line(-size*(0.25 + 0.15*sf), size*(0.25 + 0.15*cf), -size*(0.25 - 0.15*sf), size*(0.25 - 0.15*cf));
-      p.line(size*(0.25 + 0.15*sf), size*(0.25 + 0.15*cf), size*(0.25 - 0.15*sf), size*(0.25 - 0.15*cf));
+      p.line(-this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
+      p.line(this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
+      p.line(-this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
+      p.line(this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
     },
   },
   Drone: {
@@ -238,29 +256,29 @@ export const Drones: { [key: string]: Drone } = {
       speed: 1,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, size, time) {
+    graphic(p: p5, color, time) {
       let sf = Math.sin(time / 2);
       let cf = Math.cos(time / 2);
       p.stroke(p.lerpColor(color, p.color(150), 0.5));
       p.strokeWeight(5);
-      p.line(-size*0.25, -size*0.25, size*0.25, size*0.25);
-      p.line(size*0.25, -size*0.25, -size*0.25, size*0.25);
+      p.line(-this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25, this.sizeX*0.25);
+      p.line(this.sizeX*0.25, -this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25);
       p.noStroke();
       p.fill(125);
-      p.rect(0, 0, size * 0.25, size * 0.55, 50);
+      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.55, 50);
       p.fill(color);
-      p.ellipse(0, 0, size*0.4, size*0.4);
+      p.ellipse(0, 0, this.sizeX*0.4, this.sizeX*0.4);
       p.fill(0, 30);
-      p.ellipse(-size * 0.02, size * 0.02, size*0.3, size*0.3);
+      p.ellipse(-this.sizeX * 0.02, this.sizeX * 0.02, this.sizeX*0.3, this.sizeX*0.3);
       color.setAlpha(100)
       p.fill(color)
-      p.ellipse(size * 0.05, -size * 0.05, size*0.3, size*0.3);
+      p.ellipse(this.sizeX * 0.05, -this.sizeX * 0.05, this.sizeX*0.3, this.sizeX*0.3);
       p.stroke(0);
       p.strokeWeight(3);
-      p.line(-size*(0.25 + 0.15*sf), -size*(0.25 + 0.15*cf), -size*(0.25 - 0.15*sf), -size*(0.25 - 0.15*cf));
-      p.line(size*(0.25 + 0.15*sf), -size*(0.25 + 0.15*cf), size*(0.25 - 0.15*sf), -size*(0.25 - 0.15*cf));
-      p.line(-size*(0.25 + 0.15*sf), size*(0.25 + 0.15*cf), -size*(0.25 - 0.15*sf), size*(0.25 - 0.15*cf));
-      p.line(size*(0.25 + 0.15*sf), size*(0.25 + 0.15*cf), size*(0.25 - 0.15*sf), size*(0.25 - 0.15*cf));
+      p.line(-this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
+      p.line(this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
+      p.line(-this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
+      p.line(this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
     },
   },
   SwarmDrone: {
@@ -282,25 +300,25 @@ export const Drones: { [key: string]: Drone } = {
       speed: 1.25,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, size, time) {
+    graphic(p: p5, color, time) {
       let sf = Math.sin(time / 2);
       let cf = Math.cos(time / 2);
       p.stroke(100);
       p.strokeWeight(4);
-      p.line(-size*0.25, -size*0.25, size*0.25, size*0.25);
-      p.line(size*0.25, -size*0.25, -size*0.25, size*0.25);
+      p.line(-this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25, this.sizeX*0.25);
+      p.line(this.sizeX*0.25, -this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25);
       p.noStroke();
       p.fill(60);
-      p.rect(0, 0, size * 0.25, size * 0.5, 50);
+      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50);
       color.setAlpha(150)
       p.fill(color);
-      p.ellipse(0, -size * 0.1, size*0.2, size*0.3);
+      p.ellipse(0, -this.sizeX * 0.1, this.sizeX*0.2, this.sizeX*0.3);
       p.stroke(color);
       p.strokeWeight(2);
-      p.line(-size*(0.25 + 0.15*sf), -size*(0.25 + 0.15*cf), -size*(0.25 - 0.15*sf), -size*(0.25 - 0.15*cf));
-      p.line(size*(0.25 + 0.15*sf), -size*(0.25 + 0.15*cf), size*(0.25 - 0.15*sf), -size*(0.25 - 0.15*cf));
-      p.line(-size*(0.25 + 0.15*sf), size*(0.25 + 0.15*cf), -size*(0.25 - 0.15*sf), size*(0.25 - 0.15*cf));
-      p.line(size*(0.25 + 0.15*sf), size*(0.25 + 0.15*cf), size*(0.25 - 0.15*sf), size*(0.25 - 0.15*cf));
+      p.line(-this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
+      p.line(this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
+      p.line(-this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
+      p.line(this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
     },
   },
   FighterDrone: {
@@ -322,31 +340,31 @@ export const Drones: { [key: string]: Drone } = {
       speed: 1.25,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, size, time) {
+    graphic(p: p5, color, time) {
       let sf = Math.sin(time / 2);
       let cf = Math.cos(time / 2);
       let sfs = Math.sin(time / 4);
       let cfs = Math.cos(time / 4);
       p.stroke(100);
       p.strokeWeight(6);
-      p.line(-size*0.25, -size*0.25, size*0.25, size*0.25);
-      p.line(size*0.25, -size*0.25, -size*0.25, size*0.25);
+      p.line(-this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25, this.sizeX*0.25);
+      p.line(this.sizeX*0.25, -this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25);
       p.noStroke();
       p.fill(60);
-      p.rect(0, 0, size * 0.25, size * 0.5, 50);
-      p.ellipse(0, -size*0.03, size * 0.4, size * 0.45);
+      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50);
+      p.ellipse(0, -this.sizeX*0.03, this.sizeX * 0.4, this.sizeX * 0.45);
       color.setAlpha(150)
       p.fill(color);
-      p.ellipse(0, -size * 0.1, size*0.2, size*0.3);
+      p.ellipse(0, -this.sizeX * 0.1, this.sizeX*0.2, this.sizeX*0.3);
       p.stroke(color);
       p.strokeWeight(3);
-      p.line(-size*(0.25 + 0.15*sf), -size*(0.25 + 0.125*cf), -size*(0.25 - 0.125*sf), -size*(0.25 - 0.125*cf));
-      p.line(size*(0.25 + 0.125*sf), -size*(0.25 + 0.125*cf), size*(0.25 - 0.125*sf), -size*(0.25 - 0.125*cf));
-      p.line(-size*(0.25 + 0.125*sf), size*(0.25 + 0.125*cf), -size*(0.25 - 0.125*sf), size*(0.25 - 0.125*cf));
-      p.line(size*(0.25 + 0.125*sf), size*(0.25 + 0.125*cf), size*(0.25 - 0.125*sf), size*(0.25 - 0.125*cf));
+      p.line(-this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.125*cf), -this.sizeX*(0.25 - 0.125*sf), -this.sizeX*(0.25 - 0.125*cf));
+      p.line(this.sizeX*(0.25 + 0.125*sf), -this.sizeX*(0.25 + 0.125*cf), this.sizeX*(0.25 - 0.125*sf), -this.sizeX*(0.25 - 0.125*cf));
+      p.line(-this.sizeX*(0.25 + 0.125*sf), this.sizeX*(0.25 + 0.125*cf), -this.sizeX*(0.25 - 0.125*sf), this.sizeX*(0.25 - 0.125*cf));
+      p.line(this.sizeX*(0.25 + 0.125*sf), this.sizeX*(0.25 + 0.125*cf), this.sizeX*(0.25 - 0.125*sf), this.sizeX*(0.25 - 0.125*cf));
       p.stroke(p.lerpColor(color, p.color(255), 0.6));
       p.strokeWeight(4);
-      p.line(size*0.25*sfs, size*0.25*cfs, -size*0.25*sfs, -size*0.25*cfs);
+      p.line(this.sizeX*0.25*sfs, this.sizeX*0.25*cfs, -this.sizeX*0.25*sfs, -this.sizeX*0.25*cfs);
     },
   },
   GunnerDrone: {
@@ -367,25 +385,25 @@ export const Drones: { [key: string]: Drone } = {
       speed: 0.75,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, size, time) {
+    graphic(p: p5, color,  time) {
       let sf = Math.sin(time / 6)
       let cf = Math.cos(time / 6);
       p.noStroke();
       p.fill(color);
-      p.ellipse(0, size*0.05, size*0.5, size*0.7);
-      p.ellipse(0, -size*0.05, size*0.6, size*0.6);
-      p.ellipse(-size*0.2, -size*0.2, 10, 10);
-      p.ellipse(size*0.2, -size*0.2, 10, 10);
+      p.ellipse(0, this.sizeX*0.05, this.sizeX*0.5, this.sizeX*0.7);
+      p.ellipse(0, -this.sizeX*0.05, this.sizeX*0.6, this.sizeX*0.6);
+      p.ellipse(-this.sizeX*0.2, -this.sizeX*0.2, 10, 10);
+      p.ellipse(this.sizeX*0.2, -this.sizeX*0.2, 10, 10);
       p.fill(p.lerpColor(color, p.color(0), 0.2));
-      p.ellipse(0, size*0.15, size*0.4, size*0.5);
-      p.ellipse(-size*0.11, -size*0.05, size*0.3, size*0.5);
-      p.ellipse(-size*0.2, -size*0.2, 10, 10);
+      p.ellipse(0, this.sizeX*0.15, this.sizeX*0.4, this.sizeX*0.5);
+      p.ellipse(-this.sizeX*0.11, -this.sizeX*0.05, this.sizeX*0.3, this.sizeX*0.5);
+      p.ellipse(-this.sizeX*0.2, -this.sizeX*0.2, 10, 10);
       p.fill(255, 100);
-      p.arc(size*0.2, -size*0.2, 10, 10, -Math.PI/2, Math.PI/4);
+      p.arc(this.sizeX*0.2, -this.sizeX*0.2, 10, 10, -Math.PI/2, Math.PI/4);
       p.stroke(0);
       p.strokeWeight(4);
-      p.line(-size*0.5*sf, size*0.5*cf, size*0.5*sf, -size*0.5*cf);
-      p.line(size*0.5*cf, size*0.5*sf, -size*0.5*cf, -size*0.5*sf);
+      p.line(-this.sizeX*0.5*sf, this.sizeX*0.5*cf, this.sizeX*0.5*sf, -this.sizeX*0.5*cf);
+      p.line(this.sizeX*0.5*cf, this.sizeX*0.5*sf, -this.sizeX*0.5*cf, -this.sizeX*0.5*sf);
     },
   },
   Plane: {
@@ -406,22 +424,22 @@ export const Drones: { [key: string]: Drone } = {
       speed: 2,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, size, time) {
+    graphic(p: p5, color, time) {
       let sf = Math.sin(time / 3);
       p.noStroke();
       p.fill(p.lerpColor(color, p.color(255), 0.25));
-      p.rect(0, -size*0.43, size*0.4, size*0.15, 50);
-      p.rect(0, 0, size, size*0.2, 50);
+      p.rect(0, -this.sizeX*0.43, this.sizeX*0.4, this.sizeX*0.15, 50);
+      p.rect(0, 0, this.sizeX, this.sizeX*0.2, 50);
       p.fill(color);
-      p.ellipse(0, size*0.45, size*0.25, size*0.25);
-      p.quad(-size*0.125, size*0.45, size*0.125, size*0.45, size*0.075, -size*0.45, -size*0.05, -size*0.45);
+      p.ellipse(0, this.sizeX*0.45, this.sizeX*0.25, this.sizeX*0.25);
+      p.quad(-this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.075, -this.sizeX*0.45, -this.sizeX*0.05, -this.sizeX*0.45);
       p.stroke(0, 50);
       p.strokeWeight(1);
-      p.line(size*0.125, size*0.45, size*0.075, -size*0.45);
-      p.line(-size*0.125, size*0.45, -size*0.05, -size*0.45);
+      p.line(this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.075, -this.sizeX*0.45);
+      p.line(-this.sizeX*0.125, this.sizeX*0.45, -this.sizeX*0.05, -this.sizeX*0.45);
       p.stroke(80);
       p.strokeWeight(3);
-      p.line(0.2*size*sf, size*0.58, -0.2*size*sf, size*0.58);
+      p.line(0.2*this.sizeX*sf, this.sizeX*0.58, -0.2*this.sizeX*sf, this.sizeX*0.58);
     },
   },
   GasserPlane: {
@@ -442,18 +460,18 @@ export const Drones: { [key: string]: Drone } = {
       speed: 1.25,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, size, time) {
+    graphic(p: p5, color, time) {
       let sf = Math.sin(time / 3);
       p.noStroke();
       p.fill(p.lerpColor(color, p.color(100), 0.6));
-      p.rect(0, -size*0.43, size*0.4, size*0.15, 50);
-      p.rect(0, 0, size, size*0.2, 50);
+      p.rect(0, -this.sizeX*0.43, this.sizeX*0.4, this.sizeX*0.15, 50);
+      p.rect(0, 0, this.sizeX, this.sizeX*0.2, 50);
       p.fill(p.lerpColor(color, p.color(150), 0.6));
-      p.ellipse(0, size*0.45, size*0.25, size*0.25);
-      p.quad(-size*0.125, size*0.45, size*0.125, size*0.45, size*0.075, -size*0.45, -size*0.05, -size*0.45);
+      p.ellipse(0, this.sizeX*0.45, this.sizeX*0.25, this.sizeX*0.25);
+      p.quad(-this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.075, -this.sizeX*0.45, -this.sizeX*0.05, -this.sizeX*0.45);
       p.stroke(80);
       p.strokeWeight(3);
-      p.line(0.2*size*sf, size*0.58, -0.2*size*sf, size*0.58);
+      p.line(0.2*this.sizeX*sf, this.sizeX*0.58, -0.2*this.sizeX*sf, this.sizeX*0.58);
     },
   },
   BomberPlane: {
@@ -474,23 +492,89 @@ export const Drones: { [key: string]: Drone } = {
       speed: 1,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, size, time) {
+    graphic(p: p5, color, time) {
       let sf = Math.sin(time / 3);
       p.noStroke();
       p.fill(p.lerpColor(color, p.color(0), 0.65));
-      p.rect(0, -size*0.43, size*0.4, size*0.15, 50);
-      p.rect(0, 0, size, size*0.2, 50);
+      p.rect(0, -this.sizeX*0.43, this.sizeX*0.4, this.sizeX*0.15, 50);
+      p.rect(0, 0, this.sizeX, this.sizeX*0.2, 50);
       p.fill(p.lerpColor(color, p.color(0), 0.45));
-      p.ellipse(0, size*0.45, size*0.25, size*0.25);
-      p.quad(-size*0.125, size*0.45, size*0.125, size*0.45, size*0.075, -size*0.45, -size*0.05, -size*0.45);
+      p.ellipse(0, this.sizeX*0.45, this.sizeX*0.25, this.sizeX*0.25);
+      p.quad(-this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.075, -this.sizeX*0.45, -this.sizeX*0.05, -this.sizeX*0.45);
       p.stroke(0, 50);
       p.strokeWeight(1);
-      p.line(size*0.125, size*0.45, size*0.075, -size*0.45);
-      p.line(-size*0.125, size*0.45, -size*0.05, -size*0.45);
+      p.line(this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.075, -this.sizeX*0.45);
+      p.line(-this.sizeX*0.125, this.sizeX*0.45, -this.sizeX*0.05, -this.sizeX*0.45);
       p.stroke(color);
       p.strokeWeight(3);
-      p.line(0.2*size*sf, size*0.58, -0.2*size*sf, size*0.58);
+      p.line(0.2*this.sizeX*sf, this.sizeX*0.58, -0.2*this.sizeX*sf, this.sizeX*0.58);
     },
   },
+  Blimp: {
+    name: "Blimp",
+    description: "A slow yet durable craft with little firepower. However, it deploys swarm drones at a quick rate.",
+    price: 400,
+    sizeX: 43,
+    sizeY: 75,
+    health: 1000,
+    firing: {
+      bulletType: Bullets.StrongDroneBullet,
+      reloadTime: 100,
+      range: 200,
+      bulletSpeed: 7,
+      accuracy: 0.2
+    },
+    movement: {
+      speed: 0.25,
+      turnSpeed: 1,
+    },
+    graphic(p: p5, color, time) {
+      p.noStroke();
+      p.fill(p.lerpColor(color, p.color(0), 0.5));
+      p.quad(0, -this.sizeX*0.3, -this.sizeX*0.5, -this.sizeX*0.6, -this.sizeX*0.5, -this.sizeX*0.9, 0, -this.sizeX*0.75);
+      p.quad(0, -this.sizeX*0.3, this.sizeX*0.5, -this.sizeX*0.6, this.sizeX*0.5, -this.sizeX*0.9, 0, -this.sizeX*0.75);
+      p.stroke(100);
+      p.strokeWeight(1);
+      p.fill(p.lerpColor(color, p.color(0), 0.1));
+      p.ellipse(0, 0, this.sizeX, this.sizeX*1.7);
+      p.fill(color);
+      p.ellipse(0, 0, this.sizeX*0.6, this.sizeX*1.7);
+      p.line(0, -this.sizeX*0.85, 0, this.sizeX*0.85);
+      p.noStroke();
+      p.fill(255, 30);
+      p.ellipse(this.sizeX*0.075, this.sizeX*0.1, this.sizeX*0.85, this.sizeX*1.4);
+    }
+  },
+  Tank: {
+    name: "Tank",
+    description: "A slow but armored craft that shoots damaging bullets.",
+    price: 75,
+    sizeX: 45,
+    sizeY: 45,
+    health: 125,
+    firing: {
+      bulletType: Bullets.TankBullet,
+      reloadTime: 100,
+      range: 225,
+      bulletSpeed: 6,
+      accuracy: 0
+    },
+    movement: {
+      speed: 0.75,
+      turnSpeed: 1,
+    },
+    graphic(p: p5, color, time) {
+      p.noStroke();
+      p.fill(color);
+      p.rect(0, 0, this.sizeX*0.7, this.sizeX*0.8, 10);
+      p.fill(p.lerpColor(color, p.color(0), 0.2));
+      p.rect(-this.sizeX*0.4, 0, this.sizeX*0.15, this.sizeX, 10);
+      p.rect(this.sizeX*0.4, 0, this.sizeX*0.15, this.sizeX, 10);
+      p.ellipse(0, 0, this.sizeX*0.5, this.sizeX*0.5);
+      p.fill(p.lerpColor(color, p.color(0), 0.1));
+      p.ellipse(this.sizeX*0.02, this.sizeX*0.05, this.sizeX*0.4, this.sizeX*0.4);
+      p.rect(0, this.sizeX*0.3, this.sizeX*0.2, this.sizeX*0.55, 50);
+    },
+  }
 }
 
