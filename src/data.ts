@@ -536,7 +536,7 @@ export const Drones: { [key: string]: Drone } = {
       speed: 0.25,
       turnSpeed: 1,
     },
-    graphic(p: p5, color) {
+    graphic(p: p5, color, time) {
       p.noStroke()
       p.fill(p.lerpColor(color, p.color(0), 0.5))
       p.quad(0, -this.sizeX * 0.3, -this.sizeX * 0.5, -this.sizeX * 0.6, -this.sizeX * 0.5, -this.sizeX * 0.9, 0, -this.sizeX * 0.75)
@@ -571,7 +571,38 @@ export const Drones: { [key: string]: Drone } = {
       speed: 0.75,
       turnSpeed: 1,
     },
-    graphic(p: p5, color) {
+    graphic(p: p5, color, time) {
+      p.noStroke()
+      p.fill(color)
+      p.rect(0, 0, this.sizeX * 0.7, this.sizeX * 0.8, 10)
+      p.fill(p.lerpColor(color, p.color(0), 0.2))
+      p.rect(-this.sizeX * 0.4, 0, this.sizeX * 0.15, this.sizeX, 10)
+      p.rect(this.sizeX * 0.4, 0, this.sizeX * 0.15, this.sizeX, 10)
+      p.ellipse(0, 0, this.sizeX * 0.5, this.sizeX * 0.5)
+      p.fill(p.lerpColor(color, p.color(0), 0.1))
+      p.ellipse(this.sizeX * 0.02, this.sizeX * 0.05, this.sizeX * 0.4, this.sizeX * 0.4)
+      p.rect(0, this.sizeX * 0.3, this.sizeX * 0.2, this.sizeX * 0.55, 50)
+    },
+  },
+  StrongTank: {
+    name: "Strong Tank",
+    description: "A faster and more well-armored vehicle that shoots strong bullets at enemies",
+    price: 75,
+    sizeX: 45,
+    sizeY: 45,
+    health: 125,
+    firing: {
+      bulletType: Bullets.TankBullet,
+      reloadTime: 100,
+      range: 225,
+      bulletSpeed: 6,
+      accuracy: 0
+    },
+    movement: {
+      speed: 0.75,
+      turnSpeed: 1,
+    },
+    graphic(p: p5, color, time) {
       p.noStroke()
       p.fill(color)
       p.rect(0, 0, this.sizeX * 0.7, this.sizeX * 0.8, 10)

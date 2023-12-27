@@ -1,11 +1,12 @@
 import p5 from "p5"
-import { Drones } from "./data"
-/* import type { Drone, Bullet, Particle } from "./data" */
+import { Bullet, Drone, Drones, Particle } from "./data"
 
 new p5((p: p5) => {
 
   let scene: "home" | "game" | "how" | "drones" | "win" | "lose" = "home"
+  let currentDroneSlide = 0
 
+  const OrderedDrones: Drone[] = Object.values(Drones)
   const colors = { player: p.color(153, 255, 170), enemy: p.color(173, 196, 255) }
 
   p.setup = () => {
@@ -27,19 +28,19 @@ new p5((p: p5) => {
         break
       case "game":
         game()
-        break;
+        break
       case "how":
         how()
-        break;
+        break
       case "drones":
         drones()
-        break;
+        break
       case "win":
         win()
-        break;
+        break
       case "lose":
         lose()
-        break;
+        break
     }
   }
 
@@ -54,8 +55,11 @@ new p5((p: p5) => {
       //   break;
       // case "how":
       //   break;
-      // case "drones":
-      //   break;
+      case "drones":
+        if (buttonCollision(300, 520, 160, 100)) scene = "home"
+        if (buttonCollision(125, 300, 100, 100)) currentDroneSlide--
+        if (buttonCollision(475, 300, 100, 100)) currentDroneSlide++
+        break;
       // case "win":
       //   break;
       // case "lose":
@@ -106,19 +110,72 @@ new p5((p: p5) => {
     p.pop()
   }
   const game = () => {
-    p.background(0);
+    p.background(0)
   }
   const how = () => {
-    p.background(255, 0, 0);
+    p.background(255, 0, 0)
   }
   const drones = () => {
-    p.background(255, 255, 0);
+    if (currentDroneSlide < 0) currentDroneSlide = OrderedDrones.length - 1
+    if (currentDroneSlide > OrderedDrones.length - 1) currentDroneSlide = 0
+
+    p.background(p.lerpColor(colors.player, p.color(127), 0.4))
+    // Title
+    p.noStroke()
+    p.fill(0)
+    p.textSize(1)
+    p.textSize(225 / p.textWidth("You win!"))
+    p.text("Drones", 300, 60)
+    p.rect(300, 105, 240, 10)
+
+    // Back button
+    p.textSize(1)
+    p.textSize(200 / p.textWidth("You win!"))
+    p.text("Back", 300, 520)
+    p.rect(300, 565, 160, 7)
+
+    // Price &info of drone
+    p.textAlign(p.CENTER, p.TOP)
+    p.textSize(1)
+    p.textSize(70 / p.textWidth("You win!"))
+    p.text(`$ ${OrderedDrones[currentDroneSlide].price} \n ${OrderedDrones[currentDroneSlide].description}`, 300, 360)
+
+    // name
+    p.textAlign(p.CENTER, p.CENTER)
+    p.textSize(1)
+    p.textSize(90 / p.textWidth("You win!"))
+    p.text(OrderedDrones[currentDroneSlide].name, 300, 150)
+
+    // Back button
+    p.textSize(1)
+    p.textSize(250 / p.textWidth("You win!"))
+    p.text("«", 125, 300)
+
+    // Forward button
+    p.textSize(1)
+    p.textSize(250 / p.textWidth("You win!"))
+    p.text("»", 475, 300)
+
+    // Display current drone
+    p.push()
+      p.translate(300, 250)
+      p.scale(130 / OrderedDrones[currentDroneSlide].sizeX)
+      p.rotate(p.frameCount / 50)
+      OrderedDrones[currentDroneSlide].graphic(p, colors.player, p.frameCount)
+    p.pop()
+
+    // Button hov cursor change
+    if (buttonCollision(300, 520, 160, 100) ||
+      buttonCollision(125, 300, 100, 100) ||
+      buttonCollision(475, 300, 100, 100)) {
+      p.cursor(p.HAND)
+    }
   }
   const win = () => {
-    p.background(0, 0, 255);
+    p.background(0, 0, 255)
   }
   const lose = () => {
-    p.background(0, 255, 255);
+    p.background(0, 255, 255)
   }
 
   const buttonCollision = (x: number, y: number, w: number, h: number, displayRect?: boolean): boolean => {
@@ -130,7 +187,7 @@ new p5((p: p5) => {
       p.mouseY < y + h / 2
     )
   }
-  /* const testGraphics = (
+  const testGraphics = (
     showGrid?: boolean,
     ...graphicToTest: Array<[Particle | Bullet | Drone, number]>
   ) => {
@@ -159,5 +216,5 @@ new p5((p: p5) => {
         p.text(i, 10, i)
       }
     }
-  } */
+  }
 }, document.querySelector("#app") as HTMLElement)
