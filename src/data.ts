@@ -14,14 +14,14 @@ export interface Bullet {
   sizeY: RangeConstraint<0, 20>
   damage: number
   immune?: boolean
-  explodes?: { 
+  explodes?: {
     bulletType: Bullet
     bulletCount: RangeConstraint<0, 50>
     bulletLifetime: number
   } | Bullet
   graphic: (p: p5, color: p5.Color) => void
 }
-export interface Particle extends Bullet {};
+export interface Particle extends Bullet { };
 
 /**
  * @name A short name
@@ -53,7 +53,7 @@ export interface Drone {
       primaryBullet: Bullet
       secondaryBullet: Bullet
       tertiaryBullet?: Bullet
-      quartenaryBullet?: Bullet  
+      quartenaryBullet?: Bullet
     } | Bullet
     reloadTime: {
       primaryReload: number
@@ -89,14 +89,14 @@ export const Particles: { [key: string]: Particle } = {
     sizeY: 6,
     damage: 0.05,
     immune: true,
-    graphic() {}
+    graphic() { }
   },
   ExplosionParticle: {
     sizeX: 4,
     sizeY: 4,
     damage: 0.25,
     immune: true,
-    graphic() {}
+    graphic() { }
   },
 }
 
@@ -136,14 +136,22 @@ export const Bullets: { [key: string]: Bullet } = {
     sizeX: 5,
     sizeY: 5,
     damage: 10,
-    graphic() {}
+    graphic(p: p5, color: p5.Color) {
+      p.noStroke()
+      p.fill(color)
+      p.ellipse(0, 0, this.sizeX, this.sizeY)
+    }
   },
-  PlaneBomb: {
-    sizeX: 8,
-    sizeY: 8,
+  BomberPlaneBomb: {
+    sizeX: 10,
+    sizeY: 10,
     damage: 75,
     explodes: Particles.ExplosionParticle,
-    graphic() {}
+    graphic(p: p5, color: p5.Color) {
+      p.noStroke()
+      p.fill(0)
+      p.ellipse(0, 0, this.sizeX, this.sizeY)
+    }
   },
   TankBullet: {
     sizeX: 10,
@@ -179,25 +187,25 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      let sf = Math.sin(time / 2);
-      let cf = Math.cos(time / 2);
-      p.stroke(p.lerpColor(color, p.color(255), 0.6));
-      p.strokeWeight(4);
-      p.line(-this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25, this.sizeX*0.25);
-      p.line(this.sizeX*0.25, -this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25);
-      p.noStroke();
-      p.fill(p.lerpColor(color, p.color(255), 0.6));
-      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50);
-      p.fill(p.lerpColor(color, p.color(255), 0.4));
-      p.ellipse(0, 0, this.sizeX*0.2, this.sizeX*0.3);
-      p.stroke(p.lerpColor(color, p.color(0), 0.5));
-      p.strokeWeight(2);
-      p.line(-this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
-      p.line(this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
-      p.line(-this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
-      p.line(this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
+      let sf = Math.sin(time / 2)
+      let cf = Math.cos(time / 2)
+      p.stroke(p.lerpColor(color, p.color(255), 0.6))
+      p.strokeWeight(4)
+      p.line(-this.sizeX * 0.25, -this.sizeX * 0.25, this.sizeX * 0.25, this.sizeX * 0.25)
+      p.line(this.sizeX * 0.25, -this.sizeX * 0.25, -this.sizeX * 0.25, this.sizeX * 0.25)
+      p.noStroke()
+      p.fill(p.lerpColor(color, p.color(255), 0.6))
+      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50)
+      p.fill(p.lerpColor(color, p.color(255), 0.4))
+      p.ellipse(0, 0, this.sizeX * 0.2, this.sizeX * 0.3)
+      p.stroke(p.lerpColor(color, p.color(0), 0.5))
+      p.strokeWeight(2)
+      p.line(-this.sizeX * (0.25 + 0.15 * sf), -this.sizeX * (0.25 + 0.15 * cf), -this.sizeX * (0.25 - 0.15 * sf), -this.sizeX * (0.25 - 0.15 * cf))
+      p.line(this.sizeX * (0.25 + 0.15 * sf), -this.sizeX * (0.25 + 0.15 * cf), this.sizeX * (0.25 - 0.15 * sf), -this.sizeX * (0.25 - 0.15 * cf))
+      p.line(-this.sizeX * (0.25 + 0.15 * sf), this.sizeX * (0.25 + 0.15 * cf), -this.sizeX * (0.25 - 0.15 * sf), this.sizeX * (0.25 - 0.15 * cf))
+      p.line(this.sizeX * (0.25 + 0.15 * sf), this.sizeX * (0.25 + 0.15 * cf), this.sizeX * (0.25 - 0.15 * sf), this.sizeX * (0.25 - 0.15 * cf))
     }
-  },  
+  },
   WeakDrone: {
     name: "Weak Drone",
     description: "A weak drone that is more intelligent and slightly better than the dumb drone but still has bad stats.",
@@ -218,23 +226,23 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      let sf = Math.sin(time / 2);
-      let cf = Math.cos(time / 2);
-      p.stroke(color);
-      p.strokeWeight(4);
-      p.line(-this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25, this.sizeX*0.25);
-      p.line(this.sizeX*0.25, -this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25);
-      p.noStroke();
-      p.fill(color);
-      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50);
-      p.fill(0, 50);
-      p.ellipse(0, 0, this.sizeX*0.2, this.sizeX*0.3);
-      p.stroke(0);
-      p.strokeWeight(2);
-      p.line(-this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
-      p.line(this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
-      p.line(-this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
-      p.line(this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
+      let sf = Math.sin(time / 2)
+      let cf = Math.cos(time / 2)
+      p.stroke(color)
+      p.strokeWeight(4)
+      p.line(-this.sizeX * 0.25, -this.sizeX * 0.25, this.sizeX * 0.25, this.sizeX * 0.25)
+      p.line(this.sizeX * 0.25, -this.sizeX * 0.25, -this.sizeX * 0.25, this.sizeX * 0.25)
+      p.noStroke()
+      p.fill(color)
+      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50)
+      p.fill(0, 50)
+      p.ellipse(0, 0, this.sizeX * 0.2, this.sizeX * 0.3)
+      p.stroke(0)
+      p.strokeWeight(2)
+      p.line(-this.sizeX * (0.25 + 0.15 * sf), -this.sizeX * (0.25 + 0.15 * cf), -this.sizeX * (0.25 - 0.15 * sf), -this.sizeX * (0.25 - 0.15 * cf))
+      p.line(this.sizeX * (0.25 + 0.15 * sf), -this.sizeX * (0.25 + 0.15 * cf), this.sizeX * (0.25 - 0.15 * sf), -this.sizeX * (0.25 - 0.15 * cf))
+      p.line(-this.sizeX * (0.25 + 0.15 * sf), this.sizeX * (0.25 + 0.15 * cf), -this.sizeX * (0.25 - 0.15 * sf), this.sizeX * (0.25 - 0.15 * cf))
+      p.line(this.sizeX * (0.25 + 0.15 * sf), this.sizeX * (0.25 + 0.15 * cf), this.sizeX * (0.25 - 0.15 * sf), this.sizeX * (0.25 - 0.15 * cf))
     },
   },
   Drone: {
@@ -257,28 +265,28 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      let sf = Math.sin(time / 2);
-      let cf = Math.cos(time / 2);
-      p.stroke(p.lerpColor(color, p.color(150), 0.5));
-      p.strokeWeight(5);
-      p.line(-this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25, this.sizeX*0.25);
-      p.line(this.sizeX*0.25, -this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25);
-      p.noStroke();
-      p.fill(125);
-      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.55, 50);
-      p.fill(color);
-      p.ellipse(0, 0, this.sizeX*0.4, this.sizeX*0.4);
-      p.fill(0, 30);
-      p.ellipse(-this.sizeX * 0.02, this.sizeX * 0.02, this.sizeX*0.3, this.sizeX*0.3);
+      let sf = Math.sin(time / 2)
+      let cf = Math.cos(time / 2)
+      p.stroke(p.lerpColor(color, p.color(150), 0.5))
+      p.strokeWeight(5)
+      p.line(-this.sizeX * 0.25, -this.sizeX * 0.25, this.sizeX * 0.25, this.sizeX * 0.25)
+      p.line(this.sizeX * 0.25, -this.sizeX * 0.25, -this.sizeX * 0.25, this.sizeX * 0.25)
+      p.noStroke()
+      p.fill(125)
+      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.55, 50)
+      p.fill(color)
+      p.ellipse(0, 0, this.sizeX * 0.4, this.sizeX * 0.4)
+      p.fill(0, 30)
+      p.ellipse(-this.sizeX * 0.02, this.sizeX * 0.02, this.sizeX * 0.3, this.sizeX * 0.3)
       color.setAlpha(100)
       p.fill(color)
-      p.ellipse(this.sizeX * 0.05, -this.sizeX * 0.05, this.sizeX*0.3, this.sizeX*0.3);
-      p.stroke(0);
-      p.strokeWeight(3);
-      p.line(-this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
-      p.line(this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
-      p.line(-this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
-      p.line(this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
+      p.ellipse(this.sizeX * 0.05, -this.sizeX * 0.05, this.sizeX * 0.3, this.sizeX * 0.3)
+      p.stroke(0)
+      p.strokeWeight(3)
+      p.line(-this.sizeX * (0.25 + 0.15 * sf), -this.sizeX * (0.25 + 0.15 * cf), -this.sizeX * (0.25 - 0.15 * sf), -this.sizeX * (0.25 - 0.15 * cf))
+      p.line(this.sizeX * (0.25 + 0.15 * sf), -this.sizeX * (0.25 + 0.15 * cf), this.sizeX * (0.25 - 0.15 * sf), -this.sizeX * (0.25 - 0.15 * cf))
+      p.line(-this.sizeX * (0.25 + 0.15 * sf), this.sizeX * (0.25 + 0.15 * cf), -this.sizeX * (0.25 - 0.15 * sf), this.sizeX * (0.25 - 0.15 * cf))
+      p.line(this.sizeX * (0.25 + 0.15 * sf), this.sizeX * (0.25 + 0.15 * cf), this.sizeX * (0.25 - 0.15 * sf), this.sizeX * (0.25 - 0.15 * cf))
     },
   },
   SwarmDrone: {
@@ -301,24 +309,24 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      let sf = Math.sin(time / 2);
-      let cf = Math.cos(time / 2);
-      p.stroke(100);
-      p.strokeWeight(4);
-      p.line(-this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25, this.sizeX*0.25);
-      p.line(this.sizeX*0.25, -this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25);
-      p.noStroke();
-      p.fill(60);
-      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50);
+      let sf = Math.sin(time / 2)
+      let cf = Math.cos(time / 2)
+      p.stroke(100)
+      p.strokeWeight(4)
+      p.line(-this.sizeX * 0.25, -this.sizeX * 0.25, this.sizeX * 0.25, this.sizeX * 0.25)
+      p.line(this.sizeX * 0.25, -this.sizeX * 0.25, -this.sizeX * 0.25, this.sizeX * 0.25)
+      p.noStroke()
+      p.fill(60)
+      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50)
       color.setAlpha(150)
-      p.fill(color);
-      p.ellipse(0, -this.sizeX * 0.1, this.sizeX*0.2, this.sizeX*0.3);
-      p.stroke(color);
-      p.strokeWeight(2);
-      p.line(-this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
-      p.line(this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), -this.sizeX*(0.25 - 0.15*cf));
-      p.line(-this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), -this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
-      p.line(this.sizeX*(0.25 + 0.15*sf), this.sizeX*(0.25 + 0.15*cf), this.sizeX*(0.25 - 0.15*sf), this.sizeX*(0.25 - 0.15*cf));
+      p.fill(color)
+      p.ellipse(0, -this.sizeX * 0.1, this.sizeX * 0.2, this.sizeX * 0.3)
+      p.stroke(color)
+      p.strokeWeight(2)
+      p.line(-this.sizeX * (0.25 + 0.15 * sf), -this.sizeX * (0.25 + 0.15 * cf), -this.sizeX * (0.25 - 0.15 * sf), -this.sizeX * (0.25 - 0.15 * cf))
+      p.line(this.sizeX * (0.25 + 0.15 * sf), -this.sizeX * (0.25 + 0.15 * cf), this.sizeX * (0.25 - 0.15 * sf), -this.sizeX * (0.25 - 0.15 * cf))
+      p.line(-this.sizeX * (0.25 + 0.15 * sf), this.sizeX * (0.25 + 0.15 * cf), -this.sizeX * (0.25 - 0.15 * sf), this.sizeX * (0.25 - 0.15 * cf))
+      p.line(this.sizeX * (0.25 + 0.15 * sf), this.sizeX * (0.25 + 0.15 * cf), this.sizeX * (0.25 - 0.15 * sf), this.sizeX * (0.25 - 0.15 * cf))
     },
   },
   FighterDrone: {
@@ -341,30 +349,30 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      let sf = Math.sin(time / 2);
-      let cf = Math.cos(time / 2);
-      let sfs = Math.sin(time / 4);
-      let cfs = Math.cos(time / 4);
-      p.stroke(100);
-      p.strokeWeight(6);
-      p.line(-this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25, this.sizeX*0.25);
-      p.line(this.sizeX*0.25, -this.sizeX*0.25, -this.sizeX*0.25, this.sizeX*0.25);
-      p.noStroke();
-      p.fill(60);
-      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50);
-      p.ellipse(0, -this.sizeX*0.03, this.sizeX * 0.4, this.sizeX * 0.45);
+      let sf = Math.sin(time / 2)
+      let cf = Math.cos(time / 2)
+      let sfs = Math.sin(time / 4)
+      let cfs = Math.cos(time / 4)
+      p.stroke(100)
+      p.strokeWeight(6)
+      p.line(-this.sizeX * 0.25, -this.sizeX * 0.25, this.sizeX * 0.25, this.sizeX * 0.25)
+      p.line(this.sizeX * 0.25, -this.sizeX * 0.25, -this.sizeX * 0.25, this.sizeX * 0.25)
+      p.noStroke()
+      p.fill(60)
+      p.rect(0, 0, this.sizeX * 0.25, this.sizeX * 0.5, 50)
+      p.ellipse(0, -this.sizeX * 0.03, this.sizeX * 0.4, this.sizeX * 0.45)
       color.setAlpha(150)
-      p.fill(color);
-      p.ellipse(0, -this.sizeX * 0.1, this.sizeX*0.2, this.sizeX*0.3);
-      p.stroke(color);
-      p.strokeWeight(3);
-      p.line(-this.sizeX*(0.25 + 0.15*sf), -this.sizeX*(0.25 + 0.125*cf), -this.sizeX*(0.25 - 0.125*sf), -this.sizeX*(0.25 - 0.125*cf));
-      p.line(this.sizeX*(0.25 + 0.125*sf), -this.sizeX*(0.25 + 0.125*cf), this.sizeX*(0.25 - 0.125*sf), -this.sizeX*(0.25 - 0.125*cf));
-      p.line(-this.sizeX*(0.25 + 0.125*sf), this.sizeX*(0.25 + 0.125*cf), -this.sizeX*(0.25 - 0.125*sf), this.sizeX*(0.25 - 0.125*cf));
-      p.line(this.sizeX*(0.25 + 0.125*sf), this.sizeX*(0.25 + 0.125*cf), this.sizeX*(0.25 - 0.125*sf), this.sizeX*(0.25 - 0.125*cf));
-      p.stroke(p.lerpColor(color, p.color(255), 0.6));
-      p.strokeWeight(4);
-      p.line(this.sizeX*0.25*sfs, this.sizeX*0.25*cfs, -this.sizeX*0.25*sfs, -this.sizeX*0.25*cfs);
+      p.fill(color)
+      p.ellipse(0, -this.sizeX * 0.1, this.sizeX * 0.2, this.sizeX * 0.3)
+      p.stroke(color)
+      p.strokeWeight(3)
+      p.line(-this.sizeX * (0.25 + 0.15 * sf), -this.sizeX * (0.25 + 0.125 * cf), -this.sizeX * (0.25 - 0.125 * sf), -this.sizeX * (0.25 - 0.125 * cf))
+      p.line(this.sizeX * (0.25 + 0.125 * sf), -this.sizeX * (0.25 + 0.125 * cf), this.sizeX * (0.25 - 0.125 * sf), -this.sizeX * (0.25 - 0.125 * cf))
+      p.line(-this.sizeX * (0.25 + 0.125 * sf), this.sizeX * (0.25 + 0.125 * cf), -this.sizeX * (0.25 - 0.125 * sf), this.sizeX * (0.25 - 0.125 * cf))
+      p.line(this.sizeX * (0.25 + 0.125 * sf), this.sizeX * (0.25 + 0.125 * cf), this.sizeX * (0.25 - 0.125 * sf), this.sizeX * (0.25 - 0.125 * cf))
+      p.stroke(p.lerpColor(color, p.color(255), 0.6))
+      p.strokeWeight(4)
+      p.line(this.sizeX * 0.25 * sfs, this.sizeX * 0.25 * cfs, -this.sizeX * 0.25 * sfs, -this.sizeX * 0.25 * cfs)
     },
   },
   GunnerDrone: {
@@ -385,25 +393,25 @@ export const Drones: { [key: string]: Drone } = {
       speed: 0.75,
       turnSpeed: 1,
     },
-    graphic(p: p5, color,  time) {
+    graphic(p: p5, color, time) {
       let sf = Math.sin(time / 6)
-      let cf = Math.cos(time / 6);
-      p.noStroke();
-      p.fill(color);
-      p.ellipse(0, this.sizeX*0.05, this.sizeX*0.5, this.sizeX*0.7);
-      p.ellipse(0, -this.sizeX*0.05, this.sizeX*0.6, this.sizeX*0.6);
-      p.ellipse(-this.sizeX*0.2, -this.sizeX*0.2, 10, 10);
-      p.ellipse(this.sizeX*0.2, -this.sizeX*0.2, 10, 10);
-      p.fill(p.lerpColor(color, p.color(0), 0.2));
-      p.ellipse(0, this.sizeX*0.15, this.sizeX*0.4, this.sizeX*0.5);
-      p.ellipse(-this.sizeX*0.11, -this.sizeX*0.05, this.sizeX*0.3, this.sizeX*0.5);
-      p.ellipse(-this.sizeX*0.2, -this.sizeX*0.2, 10, 10);
-      p.fill(255, 100);
-      p.arc(this.sizeX*0.2, -this.sizeX*0.2, 10, 10, -Math.PI/2, Math.PI/4);
-      p.stroke(0);
-      p.strokeWeight(4);
-      p.line(-this.sizeX*0.5*sf, this.sizeX*0.5*cf, this.sizeX*0.5*sf, -this.sizeX*0.5*cf);
-      p.line(this.sizeX*0.5*cf, this.sizeX*0.5*sf, -this.sizeX*0.5*cf, -this.sizeX*0.5*sf);
+      let cf = Math.cos(time / 6)
+      p.noStroke()
+      p.fill(color)
+      p.ellipse(0, this.sizeX * 0.05, this.sizeX * 0.5, this.sizeX * 0.7)
+      p.ellipse(0, -this.sizeX * 0.05, this.sizeX * 0.6, this.sizeX * 0.6)
+      p.ellipse(-this.sizeX * 0.2, -this.sizeX * 0.2, 10, 10)
+      p.ellipse(this.sizeX * 0.2, -this.sizeX * 0.2, 10, 10)
+      p.fill(p.lerpColor(color, p.color(0), 0.2))
+      p.ellipse(0, this.sizeX * 0.15, this.sizeX * 0.4, this.sizeX * 0.5)
+      p.ellipse(-this.sizeX * 0.11, -this.sizeX * 0.05, this.sizeX * 0.3, this.sizeX * 0.5)
+      p.ellipse(-this.sizeX * 0.2, -this.sizeX * 0.2, 10, 10)
+      p.fill(255, 100)
+      p.arc(this.sizeX * 0.2, -this.sizeX * 0.2, 10, 10, -Math.PI / 2, Math.PI / 4)
+      p.stroke(0)
+      p.strokeWeight(4)
+      p.line(-this.sizeX * 0.5 * sf, this.sizeX * 0.5 * cf, this.sizeX * 0.5 * sf, -this.sizeX * 0.5 * cf)
+      p.line(this.sizeX * 0.5 * cf, this.sizeX * 0.5 * sf, -this.sizeX * 0.5 * cf, -this.sizeX * 0.5 * sf)
     },
   },
   Plane: {
@@ -425,21 +433,21 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      let sf = Math.sin(time / 3);
-      p.noStroke();
-      p.fill(p.lerpColor(color, p.color(255), 0.25));
-      p.rect(0, -this.sizeX*0.43, this.sizeX*0.4, this.sizeX*0.15, 50);
-      p.rect(0, 0, this.sizeX, this.sizeX*0.2, 50);
-      p.fill(color);
-      p.ellipse(0, this.sizeX*0.45, this.sizeX*0.25, this.sizeX*0.25);
-      p.quad(-this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.075, -this.sizeX*0.45, -this.sizeX*0.05, -this.sizeX*0.45);
-      p.stroke(0, 50);
-      p.strokeWeight(1);
-      p.line(this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.075, -this.sizeX*0.45);
-      p.line(-this.sizeX*0.125, this.sizeX*0.45, -this.sizeX*0.05, -this.sizeX*0.45);
-      p.stroke(80);
-      p.strokeWeight(3);
-      p.line(0.2*this.sizeX*sf, this.sizeX*0.58, -0.2*this.sizeX*sf, this.sizeX*0.58);
+      let sf = Math.sin(time / 3)
+      p.noStroke()
+      p.fill(p.lerpColor(color, p.color(255), 0.25))
+      p.rect(0, -this.sizeX * 0.43, this.sizeX * 0.4, this.sizeX * 0.15, 50)
+      p.rect(0, 0, this.sizeX, this.sizeX * 0.2, 50)
+      p.fill(color)
+      p.ellipse(0, this.sizeX * 0.45, this.sizeX * 0.25, this.sizeX * 0.25)
+      p.quad(-this.sizeX * 0.125, this.sizeX * 0.45, this.sizeX * 0.125, this.sizeX * 0.45, this.sizeX * 0.075, -this.sizeX * 0.45, -this.sizeX * 0.05, -this.sizeX * 0.45)
+      p.stroke(0, 50)
+      p.strokeWeight(1)
+      p.line(this.sizeX * 0.125, this.sizeX * 0.45, this.sizeX * 0.075, -this.sizeX * 0.45)
+      p.line(-this.sizeX * 0.125, this.sizeX * 0.45, -this.sizeX * 0.05, -this.sizeX * 0.45)
+      p.stroke(80)
+      p.strokeWeight(3)
+      p.line(0.2 * this.sizeX * sf, this.sizeX * 0.58, -0.2 * this.sizeX * sf, this.sizeX * 0.58)
     },
   },
   GasserPlane: {
@@ -461,17 +469,17 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      let sf = Math.sin(time / 3);
-      p.noStroke();
-      p.fill(p.lerpColor(color, p.color(100), 0.6));
-      p.rect(0, -this.sizeX*0.43, this.sizeX*0.4, this.sizeX*0.15, 50);
-      p.rect(0, 0, this.sizeX, this.sizeX*0.2, 50);
-      p.fill(p.lerpColor(color, p.color(150), 0.6));
-      p.ellipse(0, this.sizeX*0.45, this.sizeX*0.25, this.sizeX*0.25);
-      p.quad(-this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.075, -this.sizeX*0.45, -this.sizeX*0.05, -this.sizeX*0.45);
-      p.stroke(80);
-      p.strokeWeight(3);
-      p.line(0.2*this.sizeX*sf, this.sizeX*0.58, -0.2*this.sizeX*sf, this.sizeX*0.58);
+      let sf = Math.sin(time / 3)
+      p.noStroke()
+      p.fill(p.lerpColor(color, p.color(100), 0.6))
+      p.rect(0, -this.sizeX * 0.43, this.sizeX * 0.4, this.sizeX * 0.15, 50)
+      p.rect(0, 0, this.sizeX, this.sizeX * 0.2, 50)
+      p.fill(p.lerpColor(color, p.color(150), 0.6))
+      p.ellipse(0, this.sizeX * 0.45, this.sizeX * 0.25, this.sizeX * 0.25)
+      p.quad(-this.sizeX * 0.125, this.sizeX * 0.45, this.sizeX * 0.125, this.sizeX * 0.45, this.sizeX * 0.075, -this.sizeX * 0.45, -this.sizeX * 0.05, -this.sizeX * 0.45)
+      p.stroke(80)
+      p.strokeWeight(3)
+      p.line(0.2 * this.sizeX * sf, this.sizeX * 0.58, -0.2 * this.sizeX * sf, this.sizeX * 0.58)
     },
   },
   BomberPlane: {
@@ -493,21 +501,21 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      let sf = Math.sin(time / 3);
-      p.noStroke();
-      p.fill(p.lerpColor(color, p.color(0), 0.65));
-      p.rect(0, -this.sizeX*0.43, this.sizeX*0.4, this.sizeX*0.15, 50);
-      p.rect(0, 0, this.sizeX, this.sizeX*0.2, 50);
-      p.fill(p.lerpColor(color, p.color(0), 0.45));
-      p.ellipse(0, this.sizeX*0.45, this.sizeX*0.25, this.sizeX*0.25);
-      p.quad(-this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.075, -this.sizeX*0.45, -this.sizeX*0.05, -this.sizeX*0.45);
-      p.stroke(0, 50);
-      p.strokeWeight(1);
-      p.line(this.sizeX*0.125, this.sizeX*0.45, this.sizeX*0.075, -this.sizeX*0.45);
-      p.line(-this.sizeX*0.125, this.sizeX*0.45, -this.sizeX*0.05, -this.sizeX*0.45);
-      p.stroke(color);
-      p.strokeWeight(3);
-      p.line(0.2*this.sizeX*sf, this.sizeX*0.58, -0.2*this.sizeX*sf, this.sizeX*0.58);
+      let sf = Math.sin(time / 3)
+      p.noStroke()
+      p.fill(p.lerpColor(color, p.color(0), 0.65))
+      p.rect(0, -this.sizeX * 0.43, this.sizeX * 0.4, this.sizeX * 0.15, 50)
+      p.rect(0, 0, this.sizeX, this.sizeX * 0.2, 50)
+      p.fill(p.lerpColor(color, p.color(0), 0.45))
+      p.ellipse(0, this.sizeX * 0.45, this.sizeX * 0.25, this.sizeX * 0.25)
+      p.quad(-this.sizeX * 0.125, this.sizeX * 0.45, this.sizeX * 0.125, this.sizeX * 0.45, this.sizeX * 0.075, -this.sizeX * 0.45, -this.sizeX * 0.05, -this.sizeX * 0.45)
+      p.stroke(0, 50)
+      p.strokeWeight(1)
+      p.line(this.sizeX * 0.125, this.sizeX * 0.45, this.sizeX * 0.075, -this.sizeX * 0.45)
+      p.line(-this.sizeX * 0.125, this.sizeX * 0.45, -this.sizeX * 0.05, -this.sizeX * 0.45)
+      p.stroke(color)
+      p.strokeWeight(3)
+      p.line(0.2 * this.sizeX * sf, this.sizeX * 0.58, -0.2 * this.sizeX * sf, this.sizeX * 0.58)
     },
   },
   Blimp: {
@@ -529,20 +537,20 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      p.noStroke();
-      p.fill(p.lerpColor(color, p.color(0), 0.5));
-      p.quad(0, -this.sizeX*0.3, -this.sizeX*0.5, -this.sizeX*0.6, -this.sizeX*0.5, -this.sizeX*0.9, 0, -this.sizeX*0.75);
-      p.quad(0, -this.sizeX*0.3, this.sizeX*0.5, -this.sizeX*0.6, this.sizeX*0.5, -this.sizeX*0.9, 0, -this.sizeX*0.75);
-      p.stroke(100);
-      p.strokeWeight(1);
-      p.fill(p.lerpColor(color, p.color(0), 0.1));
-      p.ellipse(0, 0, this.sizeX, this.sizeX*1.7);
-      p.fill(color);
-      p.ellipse(0, 0, this.sizeX*0.6, this.sizeX*1.7);
-      p.line(0, -this.sizeX*0.85, 0, this.sizeX*0.85);
-      p.noStroke();
-      p.fill(255, 30);
-      p.ellipse(this.sizeX*0.075, this.sizeX*0.1, this.sizeX*0.85, this.sizeX*1.4);
+      p.noStroke()
+      p.fill(p.lerpColor(color, p.color(0), 0.5))
+      p.quad(0, -this.sizeX * 0.3, -this.sizeX * 0.5, -this.sizeX * 0.6, -this.sizeX * 0.5, -this.sizeX * 0.9, 0, -this.sizeX * 0.75)
+      p.quad(0, -this.sizeX * 0.3, this.sizeX * 0.5, -this.sizeX * 0.6, this.sizeX * 0.5, -this.sizeX * 0.9, 0, -this.sizeX * 0.75)
+      p.stroke(100)
+      p.strokeWeight(1)
+      p.fill(p.lerpColor(color, p.color(0), 0.1))
+      p.ellipse(0, 0, this.sizeX, this.sizeX * 1.7)
+      p.fill(color)
+      p.ellipse(0, 0, this.sizeX * 0.6, this.sizeX * 1.7)
+      p.line(0, -this.sizeX * 0.85, 0, this.sizeX * 0.85)
+      p.noStroke()
+      p.fill(255, 30)
+      p.ellipse(this.sizeX * 0.075, this.sizeX * 0.1, this.sizeX * 0.85, this.sizeX * 1.4)
     }
   },
   Tank: {
@@ -564,16 +572,16 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      p.noStroke();
-      p.fill(color);
-      p.rect(0, 0, this.sizeX*0.7, this.sizeX*0.8, 10);
-      p.fill(p.lerpColor(color, p.color(0), 0.2));
-      p.rect(-this.sizeX*0.4, 0, this.sizeX*0.15, this.sizeX, 10);
-      p.rect(this.sizeX*0.4, 0, this.sizeX*0.15, this.sizeX, 10);
-      p.ellipse(0, 0, this.sizeX*0.5, this.sizeX*0.5);
-      p.fill(p.lerpColor(color, p.color(0), 0.1));
-      p.ellipse(this.sizeX*0.02, this.sizeX*0.05, this.sizeX*0.4, this.sizeX*0.4);
-      p.rect(0, this.sizeX*0.3, this.sizeX*0.2, this.sizeX*0.55, 50);
+      p.noStroke()
+      p.fill(color)
+      p.rect(0, 0, this.sizeX * 0.7, this.sizeX * 0.8, 10)
+      p.fill(p.lerpColor(color, p.color(0), 0.2))
+      p.rect(-this.sizeX * 0.4, 0, this.sizeX * 0.15, this.sizeX, 10)
+      p.rect(this.sizeX * 0.4, 0, this.sizeX * 0.15, this.sizeX, 10)
+      p.ellipse(0, 0, this.sizeX * 0.5, this.sizeX * 0.5)
+      p.fill(p.lerpColor(color, p.color(0), 0.1))
+      p.ellipse(this.sizeX * 0.02, this.sizeX * 0.05, this.sizeX * 0.4, this.sizeX * 0.4)
+      p.rect(0, this.sizeX * 0.3, this.sizeX * 0.2, this.sizeX * 0.55, 50)
     },
   }
 }
