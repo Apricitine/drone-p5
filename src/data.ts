@@ -559,16 +559,16 @@ export const Drones: { [key: string]: Drone } = {
     price: 75,
     sizeX: 45,
     sizeY: 45,
-    health: 125,
+    health: 100,
     firing: {
       bulletType: Bullets.TankBullet,
-      reloadTime: 100,
+      reloadTime: 150,
       range: 225,
       bulletSpeed: 6,
       accuracy: 0
     },
     movement: {
-      speed: 0.75,
+      speed: 0.6,
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
@@ -587,14 +587,14 @@ export const Drones: { [key: string]: Drone } = {
   StrongTank: {
     name: "Strong Tank",
     description: "A faster and more well-armored vehicle that shoots strong bullets at enemies",
-    price: 75,
+    price: 125,
     sizeX: 45,
     sizeY: 45,
-    health: 125,
+    health: 150,
     firing: {
       bulletType: Bullets.TankBullet,
       reloadTime: 100,
-      range: 225,
+      range: 250,
       bulletSpeed: 6,
       accuracy: 0
     },
@@ -603,16 +603,19 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      p.noStroke()
-      p.fill(color)
-      p.rect(0, 0, this.sizeX * 0.7, this.sizeX * 0.8, 10)
-      p.fill(p.lerpColor(color, p.color(0), 0.2))
-      p.rect(-this.sizeX * 0.4, 0, this.sizeX * 0.15, this.sizeX, 10)
-      p.rect(this.sizeX * 0.4, 0, this.sizeX * 0.15, this.sizeX, 10)
-      p.ellipse(0, 0, this.sizeX * 0.5, this.sizeX * 0.5)
-      p.fill(p.lerpColor(color, p.color(0), 0.1))
-      p.ellipse(this.sizeX * 0.02, this.sizeX * 0.05, this.sizeX * 0.4, this.sizeX * 0.4)
-      p.rect(0, this.sizeX * 0.3, this.sizeX * 0.2, this.sizeX * 0.55, 50)
+      p.noStroke();
+      p.fill(100);
+      p.rect(0, 0, this.sizeX*0.7, this.sizeX*0.8, 10);
+      p.fill(p.lerpColor(color, p.color(100), 0.5));
+      p.rect(-this.sizeX*0.40, 0, this.sizeX*0.20, this.sizeX, 10);
+      p.rect(this.sizeX*0.40, 0, this.sizeX*0.20, this.sizeX, 10);
+      p.ellipse(0, 0, this.sizeX*0.5, this.sizeX*0.5);
+      p.fill(p.lerpColor(color, p.color(100), 0.8));
+      p.rect(0, this.sizeX*0.3, this.sizeX*0.20, this.sizeX*0.4, 50);
+      p.fill(p.lerpColor(color, p.color(100), 0.2));
+      p.ellipse(0, 0, this.sizeX*0.4, this.sizeX*0.4);
+      p.fill(p.lerpColor(color, p.color(100), 0.05));
+      p.ellipse(0, 0, this.sizeX*0.3, this.sizeX*0.3);
     },
   }
 }
