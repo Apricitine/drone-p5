@@ -1,10 +1,9 @@
 import p5 from "p5"
-import { Drones, Bullets, Particles } from "./data"
-import type { Drone, Bullet, Particle } from "./data"
+import { Drones } from "./data"
+/* import type { Drone, Bullet, Particle } from "./data" */
 
 new p5((p: p5) => {
 
-  let money = 0
   let scene: "home" | "game" | "how" | "drones" | "win" | "lose" = "home"
 
   const colors = { player: p.color(153, 255, 170), enemy: p.color(173, 196, 255) }
@@ -69,7 +68,7 @@ new p5((p: p5) => {
     if (buttonCollision(195, 300, 225, 100)) p.cursor(p.HAND)
     if (buttonCollision(195, 400, 225, 100)) p.cursor(p.HAND)
     if (buttonCollision(195, 500, 225, 100)) p.cursor(p.HAND)
-    
+
     p.background(p.lerpColor(colors.player, p.color(127), 0.4))
     p.noStroke()
 
@@ -131,7 +130,7 @@ new p5((p: p5) => {
       p.mouseY < y + h / 2
     )
   }
-  const testGraphics = (
+  /* const testGraphics = (
     showGrid?: boolean,
     ...graphicToTest: Array<[Particle | Bullet | Drone, number]>
   ) => {
@@ -160,5 +159,5 @@ new p5((p: p5) => {
         p.text(i, 10, i)
       }
     }
-  }
+  } */
 }, document.querySelector("#app") as HTMLElement)

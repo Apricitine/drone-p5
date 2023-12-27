@@ -147,7 +147,7 @@ export const Bullets: { [key: string]: Bullet } = {
     sizeY: 10,
     damage: 75,
     explodes: Particles.ExplosionParticle,
-    graphic(p: p5, color: p5.Color) {
+    graphic(p: p5) {
       p.noStroke()
       p.fill(0)
       p.ellipse(0, 0, this.sizeX, this.sizeY)
@@ -536,7 +536,7 @@ export const Drones: { [key: string]: Drone } = {
       speed: 0.25,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, time) {
+    graphic(p: p5, color) {
       p.noStroke()
       p.fill(p.lerpColor(color, p.color(0), 0.5))
       p.quad(0, -this.sizeX * 0.3, -this.sizeX * 0.5, -this.sizeX * 0.6, -this.sizeX * 0.5, -this.sizeX * 0.9, 0, -this.sizeX * 0.75)
@@ -571,7 +571,7 @@ export const Drones: { [key: string]: Drone } = {
       speed: 0.75,
       turnSpeed: 1,
     },
-    graphic(p: p5, color, time) {
+    graphic(p: p5, color) {
       p.noStroke()
       p.fill(color)
       p.rect(0, 0, this.sizeX * 0.7, this.sizeX * 0.8, 10)
