@@ -2,6 +2,7 @@ import p5 from "p5"
 import { Bullet, Drone, Drones, Particle } from "./data"
 
 new p5((p: p5) => {
+  p.disableFriendlyErrors = true
 
   let scene: "home" | "game" | "how" | "drones" | "win" | "lose" = "home"
   let currentDroneSlide = 0
