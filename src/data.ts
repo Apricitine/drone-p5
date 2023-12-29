@@ -755,17 +755,17 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
-      p.noStroke();
-      p.fill(color);
-      p.rect(0, 0, this.sizeX*0.6, this.sizeX*0.8, 10);
-      p.fill(0);
-      p.rect(-this.sizeX*0.35, 0, this.sizeX*0.15, this.sizeX*0.9, 10);
-      p.rect(this.sizeX*0.35, 0, this.sizeX*0.15, this.sizeX*0.9, 10);
-      p.fill(p.lerpColor(color, p.color(0), 0.4));
-      p.ellipse(0, 0, this.sizeX * 0.7, this.sizeX * 0.7);
-      p.rect(0, this.sizeX*0.4, this.sizeX*0.3, this.sizeX*0.4, 50);
-      p.fill(p.lerpColor(color, p.color(255), 0.1 + 0.1 * Math.sin(time / 10)));
-      p.triangle(0, this.sizeX*0.175, -this.sizeX*0.15, -this.sizeX*0.1, this.sizeX*0.15, -this.sizeX*0.1);
+      p.noStroke()
+      p.fill(color)
+      p.rect(0, 0, this.sizeX * 0.6, this.sizeX * 0.8, 10)
+      p.fill(0)
+      p.rect(-this.sizeX * 0.35, 0, this.sizeX * 0.15, this.sizeX * 0.9, 10)
+      p.rect(this.sizeX * 0.35, 0, this.sizeX * 0.15, this.sizeX * 0.9, 10)
+      p.fill(p.lerpColor(color, p.color(0), 0.4))
+      p.ellipse(0, 0, this.sizeX * 0.7, this.sizeX * 0.7)
+      p.rect(0, this.sizeX * 0.4, this.sizeX * 0.3, this.sizeX * 0.4, 50)
+      p.fill(p.lerpColor(color, p.color(255), 0.1 + 0.1 * Math.sin(time / 10)))
+      p.triangle(0, this.sizeX * 0.175, -this.sizeX * 0.15, -this.sizeX * 0.1, this.sizeX * 0.15, -this.sizeX * 0.1)
     },
   }
 }

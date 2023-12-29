@@ -23,9 +23,6 @@ new p5((p: p5) => {
   }
 
   p.draw = () => {
-    testGraphics(true, [Drones.BurnerTank, 300], [Particles.Flame, 500])
-    return
-
     p.cursor(p.ARROW)
 
     switch (transition.duration <= 1 ? scene : transition.scene) {
@@ -67,6 +64,9 @@ new p5((p: p5) => {
         if (buttonCollision(300, 520, 160, 100)) scene = "home"
         if (buttonCollision(125, 300, 100, 100)) currentDroneSlide--
         if (buttonCollision(475, 300, 100, 100)) currentDroneSlide++
+        break
+      case "how":
+        if (buttonCollision(300, 520, 160, 100)) scene = "home"
         break
     }
   }
@@ -117,7 +117,34 @@ new p5((p: p5) => {
     p.background(0)
   }
   const how = () => {
-    p.background(255, 0, 0)
+    p.background(p.lerpColor(colors.player, p.color(127), 0.4))
+
+    p.noStroke()
+    p.fill(0)
+    p.textSize(1)
+    p.textSize(300 / p.textWidth("You win!"))
+    p.text("How", 300, 60)
+    p.rect(300, 115, 240, 10)
+
+    p.textSize(1)
+    p.textSize(200 / p.textWidth("You win!"))
+    p.text("Back", 300, 520)
+    p.rect(300, 565, 160, 7)
+
+    p.textSize(1)
+    p.textSize(110 / p.textWidth("You win!"))
+    p.text("\nMove your mouse up and\ndown to navigate the map.\nThe shop is on the\nbottom of the screen.\nClick an item to select it.\nThen click the map to\nplace the item.", 300, 300)
+
+    p.push()
+    p.translate(500, 80)
+    p.rotate(1.1)
+    p.scale(2)
+    Drones.BurnerTank.graphic(p, colors.enemy, p.frameCount)
+    p.pop()
+
+    if (buttonCollision(300, 520, 160, 100)) {
+      p.cursor(p.HAND)
+    }
   }
   const drones = () => {
     if (currentDroneSlide < 0) currentDroneSlide = OrderedDrones.length - 1
@@ -182,6 +209,16 @@ new p5((p: p5) => {
     p.background(0, 255, 255)
   }
 
+  /* UTILITY FUNCTIONS */
+  /**
+   * Checks if the mouse cursor is within the boundaries of a button.
+   * @param x - The x-coordinate of the button's center.
+   * @param y - The y-coordinate of the button's center.
+   * @param w - The width of the button.
+   * @param h - The height of the button.
+   * @param displayRect - Optional. If true, displays a rectangle representing the button's boundaries.
+   * @returns True if the mouse cursor is within the button's boundaries, false otherwise.
+   */
   const buttonCollision = (x: number, y: number, w: number, h: number, displayRect?: boolean): boolean => {
     if (displayRect) p.noStroke().fill(255, 0, 0).rect(x, y, w, h)
     return (
@@ -191,6 +228,12 @@ new p5((p: p5) => {
       p.mouseY < y + h / 2
     )
   }
+  /**
+   * Renders the graphics of particles, bullets, and drones on the canvas.
+   * 
+   * @param showGrid - Optional parameter to indicate whether to show the grid. Defaults to true.
+   * @param graphicToTest - An array of tuples, where each tuple contains a graphic object (Particle, Bullet, or Drone) and a y-coordinate.
+   */
   const testGraphics = (
     showGrid?: boolean,
     ...graphicToTest: Array<[Particle | Bullet | Drone, number]>
