@@ -1,10 +1,12 @@
 import p5 from "p5"
-import { Bullet, Drone, Drones, Particle } from "./data"
+import { Bullet, Bullets, Drone, Drones, Particle, Particles } from "./data"
+import { abs, smoothStep } from "./utility"
 
 new p5((p: p5) => {
 
   let scene: "home" | "game" | "how" | "drones" | "win" | "lose" = "home"
   let currentDroneSlide = 0
+  let transition: { duration: number, scene?: string } = { duration: 0 }
 
   const OrderedDrones: Drone[] = Object.values(Drones)
   const colors = { player: p.color(153, 255, 170), enemy: p.color(173, 196, 255) }
@@ -20,9 +22,12 @@ new p5((p: p5) => {
   }
 
   p.draw = () => {
+    testGraphics(true, [Drones.BurnerTank, 300], [Particles.Flame, 500])
+    return
+
     p.cursor(p.ARROW)
 
-    switch (scene) {
+    switch (transition.duration <= 1 ? scene : transition.scene) {
       case "home":
         home()
         break
@@ -42,6 +47,12 @@ new p5((p: p5) => {
         lose()
         break
     }
+    if (transition.duration > 0) {
+      transition.duration -= 0.05
+      var tr = smoothStep(1 - abs(transition.duration - 1))
+      p.fill(0, 255 * tr)
+      p.rect(300, 300, 600, 600)
+    }
   }
 
   p.mousePressed = () => {
@@ -51,23 +62,15 @@ new p5((p: p5) => {
         if (buttonCollision(195, 400, 225, 100)) scene = "how"
         if (buttonCollision(195, 500, 225, 100)) scene = "drones"
         break
-      // case "game":
-      //   break;
-      // case "how":
-      //   break;
       case "drones":
         if (buttonCollision(300, 520, 160, 100)) scene = "home"
         if (buttonCollision(125, 300, 100, 100)) currentDroneSlide--
         if (buttonCollision(475, 300, 100, 100)) currentDroneSlide++
-        break;
-      // case "win":
-      //   break;
-      // case "lose":
-      //   break;
+        break
     }
   }
 
-  /** ALL MAIN CODE **/
+  /* ALL SCENE RELATED CODE */
   const home = () => {
     if (buttonCollision(195, 300, 225, 100)) p.cursor(p.HAND)
     if (buttonCollision(195, 400, 225, 100)) p.cursor(p.HAND)
@@ -158,10 +161,10 @@ new p5((p: p5) => {
 
     // Display current drone
     p.push()
-      p.translate(300, 250)
-      p.scale(130 / OrderedDrones[currentDroneSlide].sizeX)
-      p.rotate(p.frameCount / 50)
-      OrderedDrones[currentDroneSlide].graphic(p, colors.player, p.frameCount)
+    p.translate(300, 250)
+    p.scale(130 / OrderedDrones[currentDroneSlide].sizeX)
+    p.rotate(p.frameCount / 50)
+    OrderedDrones[currentDroneSlide].graphic(p, colors.player, p.frameCount)
     p.pop()
 
     // Button hov cursor change

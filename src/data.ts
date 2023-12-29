@@ -10,8 +10,8 @@ import p5 from "p5"
  * @graphic The bullet'team graphic
  */
 export interface Bullet {
-  sizeX: RangeConstraint<0, 20>
-  sizeY: RangeConstraint<0, 20>
+  sizeX: RangeConstraint<0, 26>
+  sizeY: RangeConstraint<0, 26>
   damage: number
   immune?: boolean
   explodes?: {
@@ -98,6 +98,28 @@ export const Particles: { [key: string]: Particle } = {
     immune: true,
     graphic() { }
   },
+  Flame: {
+    sizeX: 25,
+    sizeY: 25,
+    damage: 0.3,
+    immune: true,
+    graphic(p: p5, color: p5.Color) {
+      p.noStroke()
+      p.fill(255, 144, 0, 90)
+      p.ellipse(0, 0, this.sizeX, this.sizeY)
+    },
+  },
+  FlameSquare: {
+    sizeX: 25,
+    sizeY: 25,
+    damage: 0.7,
+    immune: true,
+    graphic(p: p5, color: p5.Color) {
+      p.noStroke()
+      p.fill(255, 144, 0, 90)
+      p.rect(0, 0, this.sizeX, this.sizeY)
+    }
+  }
 }
 
 /** ALL OF THE BULLET DATA **/
@@ -161,6 +183,28 @@ export const Bullets: { [key: string]: Bullet } = {
       p.noStroke()
       p.fill(p.lerpColor(color, p.color(0), 0.15))
       p.ellipse(0, 0, this.sizeX, this.sizeY)
+    },
+  },
+  SniperTankBullet: {
+    sizeX: 6,
+    sizeY: 9,
+    damage: 40,
+    graphic(p: p5, color) {
+      p.noStroke()
+      p.fill(p.lerpColor(color, p.color(100), 0.7))
+      p.ellipse(0, 0, this.sizeX, this.sizeY)
+    }
+  },
+  Mine: {
+    sizeX: 15,
+    sizeY: 15,
+    damage: 125,
+    explodes: Particles.ExplosionParticle,
+    graphic(p: p5, color) {
+      p.fill(0)
+      p.ellipse(0, 0, this.sizeX, this.sizeY)
+      p.fill(color)
+      p.ellipse(0, 0, this.sizeX * 0.65, this.sizeY * 0.65)
     },
   }
 }
@@ -603,19 +647,125 @@ export const Drones: { [key: string]: Drone } = {
       turnSpeed: 1,
     },
     graphic(p: p5, color, time) {
+      p.noStroke()
+      p.fill(100)
+      p.rect(0, 0, this.sizeX * 0.7, this.sizeX * 0.8, 10)
+      p.fill(p.lerpColor(color, p.color(100), 0.5))
+      p.rect(-this.sizeX * 0.40, 0, this.sizeX * 0.20, this.sizeX, 10)
+      p.rect(this.sizeX * 0.40, 0, this.sizeX * 0.20, this.sizeX, 10)
+      p.ellipse(0, 0, this.sizeX * 0.5, this.sizeX * 0.5)
+      p.fill(p.lerpColor(color, p.color(100), 0.8))
+      p.rect(0, this.sizeX * 0.3, this.sizeX * 0.20, this.sizeX * 0.4, 50)
+      p.fill(p.lerpColor(color, p.color(100), 0.2))
+      p.ellipse(0, 0, this.sizeX * 0.4, this.sizeX * 0.4)
+      p.fill(p.lerpColor(color, p.color(100), 0.05))
+      p.ellipse(0, 0, this.sizeX * 0.3, this.sizeX * 0.3)
+    },
+  },
+  SniperTank: {
+    name: "Sniper Tank",
+    description: "A tank that shoots at enemies from afar. It has bad speed, reload, and defense, but incredible range and damage.",
+    price: 175,
+    sizeX: 45,
+    sizeY: 45,
+    health: 125,
+    firing: {
+      bulletType: Bullets.SniperTankBullet,
+      reloadTime: 350,
+      range: 750,
+      bulletSpeed: 10,
+      accuracy: 0
+    },
+    movement: {
+      speed: 0.2,
+      turnSpeed: 1,
+    },
+    graphic(p: p5, color, time) {
+      p.noStroke()
+      p.fill(color)
+      p.rect(0, 0, this.sizeX * 0.6, this.sizeX * 0.8, 10)
+      p.fill(p.lerpColor(color, p.color(0), 0.5))
+      p.rect(-this.sizeX * 0.35, 0, this.sizeX * 0.15, this.sizeX * 0.9, 10)
+      p.rect(this.sizeX * 0.35, 0, this.sizeX * 0.15, this.sizeX * 0.9, 10)
+      p.fill(90)
+      p.ellipse(0, 0, this.sizeX * 0.5, this.sizeX * 0.5)
+      p.fill(100)
+      p.rect(0, this.sizeX * 0.4, this.sizeX * 0.2, this.sizeX * 0.4, 50)
+      p.ellipse(this.sizeX * 0.02, this.sizeX * 0.05, this.sizeX * 0.4, this.sizeX * 0.4)
+    },
+  },
+  MineTank: {
+    name: "Mine Tank",
+    description: "A durable and fast tank that lays mines that explode after a while or on enemy contact.",
+    price: 175,
+    sizeX: 45,
+    sizeY: 45,
+    health: 150,
+    firing: {
+      bulletType: Bullets.Mine,
+      reloadTime: 250,
+      range: 400,
+      bulletSpeed: 0,
+      accuracy: 0
+    },
+    movement: {
+      speed: 0.9,
+      turnSpeed: 1,
+    },
+    graphic(p: p5, color, time) {
+      p.noStroke()
+      p.fill(color)
+      p.rect(0, 0, this.sizeX * 0.6, this.sizeX * 0.8, 10)
+      p.fill(p.lerpColor(color, p.color(0), 0.5))
+      p.rect(-this.sizeX * 0.35, 0, this.sizeX * 0.15, this.sizeX * 0.9, 10)
+      p.rect(this.sizeX * 0.35, 0, this.sizeX * 0.15, this.sizeX * 0.9, 10)
+      p.fill(255, 100)
+      p.rotate(-time / 40)
+      p.beginShape()
+      for (var i = 0; i < 6; i++) {
+        p.vertex(this.sizeX * 0.4 * Math.sin(p.PI * i / 3), this.sizeX * 0.4 * Math.cos(p.PI * i / 3))
+      }
+      p.endShape()
+      p.fill(p.lerpColor(color, p.color(0), 0.3))
+      p.ellipse(0, 0, this.sizeX * 0.5, this.sizeX * 0.5)
+      p.fill(p.lerpColor(color, p.color(0), 0.2))
+      //   rect(0, this.sizeX*0.4, this.sizeX*0.2, this.sizeX*0.4, 50);
+      p.ellipse(this.sizeX * 0.02, this.sizeX * 0.05, this.sizeX * 0.4, this.sizeX * 0.4)
+    },
+  },
+  BurnerTank: {
+    name: "Burner Tank",
+    description: "A durable tank with fantastic firepower. It can only shoot from a close range, but the flames it shoots deal great damage",
+    price: 250,
+    sizeX: 45,
+    sizeY: 45,
+    health: 175,
+    firing: {
+      bulletType: {
+        primaryBullet: Particles.Flame,
+        secondaryBullet: Particles.SquareFlame
+      },
+      reloadTime: 1,
+      range: 175,
+      bulletSpeed: 3.5,
+      accuracy: 0.5
+    },
+    movement: {
+      speed: 0.4,
+      turnSpeed: 1,
+    },
+    graphic(p: p5, color, time) {
       p.noStroke();
-      p.fill(100);
-      p.rect(0, 0, this.sizeX*0.7, this.sizeX*0.8, 10);
-      p.fill(p.lerpColor(color, p.color(100), 0.5));
-      p.rect(-this.sizeX*0.40, 0, this.sizeX*0.20, this.sizeX, 10);
-      p.rect(this.sizeX*0.40, 0, this.sizeX*0.20, this.sizeX, 10);
-      p.ellipse(0, 0, this.sizeX*0.5, this.sizeX*0.5);
-      p.fill(p.lerpColor(color, p.color(100), 0.8));
-      p.rect(0, this.sizeX*0.3, this.sizeX*0.20, this.sizeX*0.4, 50);
-      p.fill(p.lerpColor(color, p.color(100), 0.2));
-      p.ellipse(0, 0, this.sizeX*0.4, this.sizeX*0.4);
-      p.fill(p.lerpColor(color, p.color(100), 0.05));
-      p.ellipse(0, 0, this.sizeX*0.3, this.sizeX*0.3);
+      p.fill(color);
+      p.rect(0, 0, this.sizeX*0.6, this.sizeX*0.8, 10);
+      p.fill(0);
+      p.rect(-this.sizeX*0.35, 0, this.sizeX*0.15, this.sizeX*0.9, 10);
+      p.rect(this.sizeX*0.35, 0, this.sizeX*0.15, this.sizeX*0.9, 10);
+      p.fill(p.lerpColor(color, p.color(0), 0.4));
+      p.ellipse(0, 0, this.sizeX * 0.7, this.sizeX * 0.7);
+      p.rect(0, this.sizeX*0.4, this.sizeX*0.3, this.sizeX*0.4, 50);
+      p.fill(p.lerpColor(color, p.color(255), 0.1 + 0.1 * Math.sin(time / 10)));
+      p.triangle(0, this.sizeX*0.175, -this.sizeX*0.15, -this.sizeX*0.1, this.sizeX*0.15, -this.sizeX*0.1);
     },
   }
 }
