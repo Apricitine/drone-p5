@@ -302,33 +302,33 @@ new p5((p: p5) => {
   const runCharacter = (which: number, side: keyof typeof characters) => {
     drawCharacter(which, side)
 
+    const oppositeSide = side === "player" ? "enemy" : "player"
+
     let speed: number = characters[side][which].character.movement?.speed ?? 0
     let turn = 0
 
-    let closestEnemyType: Drone
+    let closestEnemyID: number = 0
     let distanceToClosestEnemy = Infinity
 
     // TODO: add logic for certain characters, line 1959
-    if (getCharacterCount(side === "player" ? "enemy" : "player")) {
-      for (let i = 0; i < getCharacterCount(side === "player" ? "enemy" : "player"); i++) {
+    if (getCharacterCount(oppositeSide)) {
+      for (let i = 0; i < getCharacterCount(oppositeSide); i++) {
         const distance = p.dist(
           characters[side][which].x,
           characters[side][which].y,
-          characters[side === "player" ? "enemy" : "player"][i].x,
-          characters[side === "player" ? "enemy" : "player"][i].y
+          characters[oppositeSide][i].x,
+          characters[oppositeSide][i].y
         )
         if (distance < distanceToClosestEnemy) {
           distanceToClosestEnemy = distance
-          closestEnemyType = characters[side === "player" ? "enemy" : "player"][i].character
+          closestEnemyID = i
         }
       }
       
       if (distanceToClosestEnemy < 400 || characters[side][which].character === Drones.Base) {
-        speed = 0
-        turn = p.atan2(
-          characters[side === "player" ? "enemy" : "player"][which].y - characters[side][which].y,
-          characters[side === "player" ? "enemy" : "player"][which].x - characters[side][which].x
-        )
+        let xAcceleration = characters[side][which].x - characters[oppositeSide][closestEnemyID].x
+        let yAcceleration = characters[side][closestEnemyID].y - characters[oppositeSide][which].y
+        
       }
     }
   }
