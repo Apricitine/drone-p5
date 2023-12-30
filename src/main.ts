@@ -1,13 +1,23 @@
 import p5 from "p5"
 import { Bullet, Bullets, Drone, Drones, Particle, Particles } from "./data"
-import { abs, smoothStep } from "./utility"
+import { abs, getHexagon, smoothStep } from "./utility"
 
 new p5((p: p5) => {
+  console.info("%ccanvas started!", "color: lightblue; font-weight: bold;")
+
   p.disableFriendlyErrors = true
+
+  type DroneTypes = "Drones" | "Tanks" | "Turrets" | "Towers" | "Walls"
 
   let scene: "home" | "game" | "how" | "drones" | "win" | "lose" = "home"
   let currentDroneSlide = 0
   let transition: { duration: number, scene?: string } = { duration: 0 }
+
+  let characters: Array<Drone> = []
+
+  let shopSelectedDrone: Drone | null = null
+  let shopSelectedDroneTransition: number
+  let shopSelectedDroneType: DroneTypes = "Drones"
 
   const OrderedDrones: Drone[] = Object.values(Drones)
   const colors = { player: p.color(153, 255, 170), enemy: p.color(173, 196, 255) }
@@ -71,7 +81,13 @@ new p5((p: p5) => {
     }
   }
 
-  /* ALL SCENE RELATED CODE */
+  /* COMPONENT METHODS */
+  const shop = () => {
+    p.fill(255, 175)
+    p.rect(300, 550, 600, 100)
+  }
+
+  /* SCENE RELATED CODE */
   const home = () => {
     if (buttonCollision(195, 300, 225, 100)) p.cursor(p.HAND)
     if (buttonCollision(195, 400, 225, 100)) p.cursor(p.HAND)
@@ -103,7 +119,7 @@ new p5((p: p5) => {
     p.translate(400, 320)
     p.scale(2.5)
     p.rotate(90)
-    Drones.Blimp.graphic(p, colors.player, p.frameCount)
+    Drones.Blimp.graphic(p, colors.enemy, p.frameCount)
     p.pop()
 
     p.push()
@@ -114,7 +130,33 @@ new p5((p: p5) => {
     p.pop()
   }
   const game = () => {
-    p.background(0)
+
+    p.push()
+    let translationY = smoothStep(700 - (p.constrain(p.mouseY, 50, 500) - 50) * 14 / 9, 0, 700) - 100
+    p.translate(0, translationY)
+
+    p.background(p.lerpColor(colors.enemy, p.color(200), 0.9))
+    p.noStroke()
+    p.fill(p.lerpColor(colors.player, p.color(200), 0.9))
+    p.rect(300, 350, 600, 700)
+
+    if (p.mouseY < 500 && p.mouseY > 250) {
+      let tile = getHexagon(p.mouseY - translationY, p.mouseX)
+
+      if (tile[1] < 15 && tile[1] > 0 && tile[0] > 0 && tile[0] < 30) {
+        p.fill(255, 150)
+        p.noStroke()
+        p.beginShape()
+        for (let i = 0; i < 6; i++) {
+          p.vertex(20 * tile[0] + 25 * Math.sin(p.PI * i / 3), 40 * tile[1] + 25 * Math.cos(p.PI * i / 3))
+        }
+        p.endShape()
+        p.cursor(p.CROSS)
+      }
+    }
+    p.pop()
+
+    shop()
   }
   const how = () => {
     p.background(p.lerpColor(colors.player, p.color(127), 0.4))
@@ -261,6 +303,16 @@ new p5((p: p5) => {
         p.line(0, i, 600, i)
         p.text(i, i, 10)
         p.text(i, 10, i)
+      }
+    }
+  }
+  const testHexGrid = () => {
+    game()
+    for (let i = 0; i < 600; i += 20) {
+      for (let j = 0; j < 600; j += 20) {
+        let tile = getHexagon(i, j)
+        p.textSize(7.5)
+        p.text(tile[0] + ", " + tile[1], i, j)
       }
     }
   }
