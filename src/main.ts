@@ -1,9 +1,9 @@
 import p5 from "p5"
 import { Bullet, Bullets, Drone, Drones, Particle, Particles } from "./data"
-import { abs, getHexagon, smoothStep } from "./utility"
+import { abs, getHexagon, smoothStep, squaredDistance } from "./utility"
 
 new p5((p: p5) => {
-  console.info("%ccanvas started!", "color: lightblue; font-weight: bold;")
+  console.info("%ccanvas mounted!", "color: lightgreen; font-weight: bold;")
 
   p.disableFriendlyErrors = true
 
@@ -288,6 +288,7 @@ new p5((p: p5) => {
       time: 0,
       health: character.health
     })
+    console.log(`%ccreated character ${character.name} on ${side} side at (${x}, ${y})`, "color: lightskyblue; font-weight: bold; background: ")
   }
   const drawCharacter = (which: number, side: keyof typeof characters) => {
     let type: Drone = characters[side][which].character
@@ -324,14 +325,38 @@ new p5((p: p5) => {
           closestEnemyID = i
         }
       }
-      
+
       if (distanceToClosestEnemy < 400 || characters[side][which].character === Drones.Base) {
         let xAcceleration = characters[side][which].x - characters[oppositeSide][closestEnemyID].x
         let yAcceleration = characters[side][closestEnemyID].y - characters[oppositeSide][which].y
-        
+
+        let accelerationMagnitude = squaredDistance(0, 0, xAcceleration, yAcceleration)
+
+        characters[side][which].xVelocity += 0.03 * (xAcceleration / accelerationMagnitude)
+        characters[side][which].yVelocity += 0.03 * (yAcceleration / accelerationMagnitude)
+
       }
+    } else {
+      let xAcceleration = characters[side][which].x - 300
+      let yAcceleration = -characters[side][which].y
+
+      let accelerationMagnitude = squaredDistance(0, 0, xAcceleration, yAcceleration)
+
+      characters[side][which].xVelocity += 0.004 * (xAcceleration / accelerationMagnitude)
+      characters[side][which].yVelocity += 0.004 * (yAcceleration / accelerationMagnitude)
+
     }
   }
+  const run = () => {
+    for (let i = 0; i < getCharacterCount("player"); i++) {
+      runCharacter(i, "player")
+    }
+    for (let i = 0; i < getCharacterCount("enemy"); i++) {
+      runCharacter(i, "enemy")
+    }
+  }
+
+  pushCharacter("player", Drones.Drone, 300, 300)
 
   /* UTILITY FUNCTIONS */
   /**

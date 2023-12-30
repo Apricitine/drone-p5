@@ -769,4 +769,3 @@ export const Drones: { [key: string]: Drone } = {
     },
   }
 }
-
