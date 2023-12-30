@@ -13,7 +13,26 @@ new p5((p: p5) => {
   let currentDroneSlide = 0
   let transition: { duration: number, scene?: string } = { duration: 0 }
 
-  let characters: Array<Drone> = []
+  let characters: {
+    player: Array<{
+      character: Drone,
+      x: number,
+      y: number,
+      xVelocity: number,
+      yVelocity: number,
+      time: number,
+      health: number
+    }>, enemy: Array<{
+      character: Drone,
+      x: number,
+      y: number,
+      xVelocity: number,
+      yVelocity: number,
+      time: number,
+      health: number
+    }>
+  } = { player: [], enemy: [] }
+  let bullets: { player: any, enemy: any } = { player: [], enemy: [] }
 
   let shopSelectedDrone: Drone | null = null
   let shopSelectedDroneTransition: number
@@ -34,7 +53,6 @@ new p5((p: p5) => {
 
   p.draw = () => {
     p.cursor(p.ARROW)
-
     switch (transition.duration <= 1 ? scene : transition.scene) {
       case "home":
         home()
@@ -81,13 +99,13 @@ new p5((p: p5) => {
     }
   }
 
-  /* COMPONENT METHODS */
+  /* COMPONENT FUNCTIONS */
   const shop = () => {
     p.fill(255, 175)
     p.rect(300, 550, 600, 100)
   }
 
-  /* SCENE RELATED CODE */
+  /* SCENE FUNCTIONS */
   const home = () => {
     if (buttonCollision(195, 300, 225, 100)) p.cursor(p.HAND)
     if (buttonCollision(195, 400, 225, 100)) p.cursor(p.HAND)
@@ -154,6 +172,7 @@ new p5((p: p5) => {
         p.cursor(p.CROSS)
       }
     }
+
     p.pop()
 
     shop()
@@ -251,16 +270,79 @@ new p5((p: p5) => {
     p.background(0, 255, 255)
   }
 
+  /* CHARACTER/BULLET MANAGEMENT FUNCTIONS */
+  const pushCharacter = (
+    side: keyof typeof characters,
+    character: Drone,
+    x: number,
+    y: number,
+    xVelocity?: number,
+    yVelocity?: number,
+  ) => {
+    characters[side].push({
+      character,
+      x,
+      y,
+      xVelocity: xVelocity || p.random(-1, 1),
+      yVelocity: yVelocity || p.random(-1, 1),
+      time: 0,
+      health: character.health
+    })
+  }
+  const drawCharacter = (which: number, side: keyof typeof characters) => {
+    let type: Drone = characters[side][which].character
+    let size = type.sizeX
+    let time: number = characters[side][which].time
+
+    p.push()
+    p.translate(characters[side][which].x, characters[side][which].y)
+    type.graphic(p, colors[side], time)
+    p.pop()
+  }
+  const runCharacter = (which: number, side: keyof typeof characters) => {
+    drawCharacter(which, side)
+
+    let speed: number = characters[side][which].character.movement?.speed ?? 0
+    let turn = 0
+
+    let closestEnemyType: Drone
+    let distanceToClosestEnemy = Infinity
+
+    // TODO: add logic for certain characters, line 1959
+    if (getCharacterCount(side === "player" ? "enemy" : "player")) {
+      for (let i = 0; i < getCharacterCount(side === "player" ? "enemy" : "player"); i++) {
+        const distance = p.dist(
+          characters[side][which].x,
+          characters[side][which].y,
+          characters[side === "player" ? "enemy" : "player"][i].x,
+          characters[side === "player" ? "enemy" : "player"][i].y
+        )
+        if (distance < distanceToClosestEnemy) {
+          distanceToClosestEnemy = distance
+          closestEnemyType = characters[side === "player" ? "enemy" : "player"][i].character
+        }
+      }
+      
+      if (distanceToClosestEnemy < 400 || characters[side][which].character === Drones.Base) {
+        speed = 0
+        turn = p.atan2(
+          characters[side === "player" ? "enemy" : "player"][which].y - characters[side][which].y,
+          characters[side === "player" ? "enemy" : "player"][which].x - characters[side][which].x
+        )
+      }
+    }
+  }
+
   /* UTILITY FUNCTIONS */
   /**
-   * Checks if the mouse cursor is within the boundaries of a button.
-   * @param x - The x-coordinate of the button's center.
-   * @param y - The y-coordinate of the button's center.
-   * @param w - The width of the button.
-   * @param h - The height of the button.
-   * @param displayRect - Optional. If true, displays a rectangle representing the button's boundaries.
-   * @returns True if the mouse cursor is within the button's boundaries, false otherwise.
-   */
+ * Checks if the mouse cursor is within the boundaries of a button.
+ * @param x - The x-coordinate of the button's center.
+ * @param y - The y-coordinate of the button's center.
+ * @param w - The width of the button.
+ * @param h - The height of the button.
+ * @param displayRect - Optional. If true, displays a rectangle representing the button's boundaries.
+ * @returns True if the mouse cursor is within the button's boundaries, false otherwise.
+ */
   const buttonCollision = (x: number, y: number, w: number, h: number, displayRect?: boolean): boolean => {
     if (displayRect) p.noStroke().fill(255, 0, 0).rect(x, y, w, h)
     return (
@@ -270,6 +352,14 @@ new p5((p: p5) => {
       p.mouseY < y + h / 2
     )
   }
+  const getCharacterCount = (side: keyof typeof characters) => {
+    return characters[side].length
+  }
+  const getBulletCount = (side: keyof typeof bullets) => {
+    return bullets[side].length
+  }
+
+  /* TEST FUNCTIONS */
   /**
    * Renders the graphics of particles, bullets, and drones on the canvas.
    * 
@@ -306,6 +396,9 @@ new p5((p: p5) => {
       }
     }
   }
+  /**
+   * Executes the game and displays a hexagonal grid with coordinates.
+   */
   const testHexGrid = () => {
     game()
     for (let i = 0; i < 600; i += 20) {
