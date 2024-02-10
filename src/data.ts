@@ -79,6 +79,7 @@ export interface Drone {
     speed: number
     turnSpeed: number
   }
+  specialBehavior?: "notarget"
   graphic: (p: p5, color: p5.Color, time: number) => void
 }
 
@@ -712,6 +713,7 @@ export const Drones: { [key: string]: Drone } = {
       speed: 0.9,
       turnSpeed: 1,
     },
+    specialBehavior: "notarget",
     graphic(p: p5, color, time) {
       p.noStroke()
       p.fill(color)

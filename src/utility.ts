@@ -1,25 +1,36 @@
 /* This file contains utility functions and types that do not use p5.js */
 
-type Enumerate<N extends number, Acc extends number[] = []> = Acc['length'] extends N
+type Enumerate<
+  N extends number,
+  Acc extends number[] = []
+> = Acc["length"] extends N
   ? Acc[number]
-  : Enumerate<N, [...Acc, Acc['length']]>
+  : Enumerate<N, [...Acc, Acc["length"]]>
 
 /**
  * Restricts anumber type to a range of numbers
  */
-export type RangeConstraint<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>
+export type RangeConstraint<F extends number, T extends number> = Exclude<
+  Enumerate<T>,
+  Enumerate<F>
+>
 
 /**
  * Calculates the squared distance between two points in a 2D plane.
- * 
+ *
  * @param x1 The x-coordinate of the first point.
  * @param y1 The y-coordinate of the first point.
  * @param x2 The x-coordinate of the second point.
  * @param y2 The y-coordinate of the second point.
  * @returns The squared distance between the two points.
  */
-export function squaredDistance(x1: number, y1: number, x2: number, y2: number): number {
-  return ((x2 - x1) ** 2) + ((y2 - y1) ** 2)
+export function squaredDistance(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
+): number {
+  return (x2 - x1) ** 2 + (y2 - y1) ** 2
 }
 
 /**
@@ -62,7 +73,7 @@ export function getHexagon(x: number, y: number): [number, number] {
 
   const offsetX = x - column * (hexagonSize << 1)
   let offsetY = y - row * hexagonSize
-  
+
   if (((row ^ column) & 1) === 0) offsetY = hexagonSize - offsetY
 
   const right = 0 < hexagonSize * (offsetX - hexagonSize) ? 1 : 0

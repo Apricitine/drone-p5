@@ -9,37 +9,51 @@ new p5((p: p5) => {
 
   type DroneTypes = "Drones" | "Tanks" | "Turrets" | "Towers" | "Walls"
 
+  interface Character {
+    character: Drone
+    x: number
+    y: number
+    xVelocity: number
+    yVelocity: number
+    time: number
+    health: number
+  }
+
   let scene: "home" | "game" | "how" | "drones" | "win" | "lose" = "home"
   let currentDroneSlide = 0
-  let transition: { duration: number, scene?: string } = { duration: 0 }
+  let transition: { duration: number; scene?: string } = { duration: 0 }
 
   let characters: {
     player: Array<{
-      character: Drone,
-      x: number,
-      y: number,
-      xVelocity: number,
-      yVelocity: number,
-      time: number,
+      character: Drone
+      x: number
+      y: number
+      xVelocity: number
+      yVelocity: number
+      time: number
       health: number
-    }>, enemy: Array<{
-      character: Drone,
-      x: number,
-      y: number,
-      xVelocity: number,
-      yVelocity: number,
-      time: number,
+    }>
+    enemy: Array<{
+      character: Drone
+      x: number
+      y: number
+      xVelocity: number
+      yVelocity: number
+      time: number
       health: number
     }>
   } = { player: [], enemy: [] }
-  let bullets: { player: any, enemy: any } = { player: [], enemy: [] }
+  let bullets: { player: any; enemy: any } = { player: [], enemy: [] }
 
   let shopSelectedDrone: Drone | null = null
   let shopSelectedDroneTransition: number
   let shopSelectedDroneType: DroneTypes = "Drones"
 
   const OrderedDrones: Drone[] = Object.values(Drones)
-  const colors = { player: p.color(153, 255, 170), enemy: p.color(173, 196, 255) }
+  const colors = {
+    player: p.color(153, 255, 170),
+    enemy: p.color(173, 196, 255),
+  }
 
   p.setup = () => {
     p.createCanvas(600, 600)
@@ -148,9 +162,13 @@ new p5((p: p5) => {
     p.pop()
   }
   const game = () => {
-
     p.push()
-    let translationY = smoothStep(700 - (p.constrain(p.mouseY, 50, 500) - 50) * 14 / 9, 0, 700) - 100
+    let translationY =
+      smoothStep(
+        700 - ((p.constrain(p.mouseY, 50, 500) - 50) * 14) / 9,
+        0,
+        700
+      ) - 100
     p.translate(0, translationY)
 
     p.background(p.lerpColor(colors.enemy, p.color(200), 0.9))
@@ -166,12 +184,17 @@ new p5((p: p5) => {
         p.noStroke()
         p.beginShape()
         for (let i = 0; i < 6; i++) {
-          p.vertex(20 * tile[0] + 25 * Math.sin(p.PI * i / 3), 40 * tile[1] + 25 * Math.cos(p.PI * i / 3))
+          p.vertex(
+            20 * tile[0] + 25 * Math.sin((p.PI * i) / 3),
+            40 * tile[1] + 25 * Math.cos((p.PI * i) / 3)
+          )
         }
         p.endShape()
         p.cursor(p.CROSS)
       }
     }
+
+    run()
 
     p.pop()
 
@@ -194,7 +217,11 @@ new p5((p: p5) => {
 
     p.textSize(1)
     p.textSize(110 / p.textWidth("You win!"))
-    p.text("\nMove your mouse up and\ndown to navigate the map.\nThe shop is on the\nbottom of the screen.\nClick an item to select it.\nThen click the map to\nplace the item.", 300, 300)
+    p.text(
+      "\nMove your mouse up and\ndown to navigate the map.\nThe shop is on the\nbottom of the screen.\nClick an item to select it.\nThen click the map to\nplace the item.",
+      300,
+      300
+    )
 
     p.push()
     p.translate(500, 80)
@@ -230,7 +257,11 @@ new p5((p: p5) => {
     p.textAlign(p.CENTER, p.TOP)
     p.textSize(1)
     p.textSize(70 / p.textWidth("You win!"))
-    p.text(`$ ${OrderedDrones[currentDroneSlide].price} \n ${OrderedDrones[currentDroneSlide].description}`, 300, 360)
+    p.text(
+      `$ ${OrderedDrones[currentDroneSlide].price} \n ${OrderedDrones[currentDroneSlide].description}`,
+      300,
+      360
+    )
 
     // name
     p.textAlign(p.CENTER, p.CENTER)
@@ -257,9 +288,11 @@ new p5((p: p5) => {
     p.pop()
 
     // Button hov cursor change
-    if (buttonCollision(300, 520, 160, 100) ||
+    if (
+      buttonCollision(300, 520, 160, 100) ||
       buttonCollision(125, 300, 100, 100) ||
-      buttonCollision(475, 300, 100, 100)) {
+      buttonCollision(475, 300, 100, 100)
+    ) {
       p.cursor(p.HAND)
     }
   }
@@ -276,21 +309,34 @@ new p5((p: p5) => {
     character: Drone,
     x: number,
     y: number,
+    logData: boolean = false,
     xVelocity?: number,
-    yVelocity?: number,
+    yVelocity?: number
   ) => {
-    characters[side].push({
+    const c = {
       character,
       x,
       y,
       xVelocity: xVelocity || p.random(-1, 1),
       yVelocity: yVelocity || p.random(-1, 1),
       time: 0,
-      health: character.health
-    })
-    console.log(`%ccreated character ${character.name} on ${side} side at (${x}, ${y})`, "color: lightskyblue; font-weight: bold; background: ")
+      health: character.health,
+    } satisfies Character
+
+    characters[side].push()
+
+    if (logData) {
+      console.log(
+        `%cpushed character ${character.name} on ${side} side at (${x}, ${y})`,
+        "color: lightskyblue; font-weight: bold; background: "
+      )
+    }
   }
-  const drawCharacter = (which: number, side: keyof typeof characters) => {
+  const drawCharacter = (
+    which: number,
+    side: keyof typeof characters,
+    logData: boolean = false
+  ) => {
     let type: Drone = characters[side][which].character
     let size = type.sizeX
     let time: number = characters[side][which].time
@@ -299,9 +345,20 @@ new p5((p: p5) => {
     p.translate(characters[side][which].x, characters[side][which].y)
     type.graphic(p, colors[side], time)
     p.pop()
+
+    if (logData) {
+      console.log(
+        `%cdrew character ${type.name} on ${side} side at (${characters[side][which].x}, ${characters[side][which].y})`,
+        "color: lightsalmon; font-weight: bold; background: "
+      )
+    }
   }
-  const runCharacter = (which: number, side: keyof typeof characters) => {
-    drawCharacter(which, side)
+  const runCharacter = (
+    which: number,
+    side: keyof typeof characters,
+    logData: boolean = false
+  ) => {
+    drawCharacter(which, side, logData)
 
     const oppositeSide = side === "player" ? "enemy" : "player"
 
@@ -312,7 +369,11 @@ new p5((p: p5) => {
     let distanceToClosestEnemy = Infinity
 
     // TODO: add logic for certain characters, line 1959
-    if (getCharacterCount(oppositeSide)) {
+    if (
+      getCharacterCount(oppositeSide) &&
+      characters[side][which].character.firing &&
+      !characters[side][which].character.specialBehavior
+    ) {
       for (let i = 0; i < getCharacterCount(oppositeSide); i++) {
         const distance = p.dist(
           characters[side][which].x,
@@ -326,49 +387,81 @@ new p5((p: p5) => {
         }
       }
 
-      if (distanceToClosestEnemy < 400 || characters[side][which].character === Drones.Base) {
-        let xAcceleration = characters[side][which].x - characters[oppositeSide][closestEnemyID].x
-        let yAcceleration = characters[side][closestEnemyID].y - characters[oppositeSide][which].y
+      if (
+        distanceToClosestEnemy < 400 ||
+        characters[side][which].character === Drones.Base
+      ) {
+        let xAcceleration =
+          characters[side][which].x - characters[oppositeSide][closestEnemyID].x
+        let yAcceleration =
+          characters[side][closestEnemyID].y - characters[oppositeSide][which].y
 
-        let accelerationMagnitude = squaredDistance(0, 0, xAcceleration, yAcceleration)
+        let accelerationMagnitude = squaredDistance(
+          0,
+          0,
+          xAcceleration,
+          yAcceleration
+        )
 
-        characters[side][which].xVelocity += 0.03 * (xAcceleration / accelerationMagnitude)
-        characters[side][which].yVelocity += 0.03 * (yAcceleration / accelerationMagnitude)
-
+        characters[side][which].xVelocity +=
+          0.03 * (xAcceleration / accelerationMagnitude)
+        characters[side][which].yVelocity +=
+          0.03 * (yAcceleration / accelerationMagnitude)
       }
     } else {
       let xAcceleration = characters[side][which].x - 300
       let yAcceleration = -characters[side][which].y
 
-      let accelerationMagnitude = squaredDistance(0, 0, xAcceleration, yAcceleration)
+      let accelerationMagnitude = squaredDistance(
+        0,
+        0,
+        xAcceleration,
+        yAcceleration
+      )
 
-      characters[side][which].xVelocity += 0.004 * (xAcceleration / accelerationMagnitude)
-      characters[side][which].yVelocity += 0.004 * (yAcceleration / accelerationMagnitude)
+      characters[side][which].xVelocity +=
+        0.004 * (xAcceleration / accelerationMagnitude)
+      characters[side][which].yVelocity +=
+        0.004 * (yAcceleration / accelerationMagnitude)
+    }
 
+    characters[side][which].time++
+
+    if (logData) {
+      console.log(
+        `%cupdated character ${characters[side][which].character.name} to (${characters[side][which].x}, ${characters[side][which].x})`,
+        "color: lightpink; font-weight: bold;"
+      )
     }
   }
   const run = () => {
     for (let i = 0; i < getCharacterCount("player"); i++) {
-      runCharacter(i, "player")
+      runCharacter(i, "player", true)
     }
     for (let i = 0; i < getCharacterCount("enemy"); i++) {
       runCharacter(i, "enemy")
     }
   }
 
-  pushCharacter("player", Drones.Drone, 300, 300)
-
+  pushCharacter("enemy", Drones.WeakDrone, 300, 300, true)
+  pushCharacter("player", Drones.WeakDrone, 300, 280, true)
   /* UTILITY FUNCTIONS */
   /**
- * Checks if the mouse cursor is within the boundaries of a button.
- * @param x - The x-coordinate of the button's center.
- * @param y - The y-coordinate of the button's center.
- * @param w - The width of the button.
- * @param h - The height of the button.
- * @param displayRect - Optional. If true, displays a rectangle representing the button's boundaries.
- * @returns True if the mouse cursor is within the button's boundaries, false otherwise.
- */
-  const buttonCollision = (x: number, y: number, w: number, h: number, displayRect?: boolean): boolean => {
+   * Checks if the mouse cursor is within the boundaries of a button.
+   * @param x - The x-coordinate of the button's center.
+   * @param y - The y-coordinate of the button's center.
+   * @param w - The width of the button.
+   * @param h - The height of the button.
+   * @param displayRect - Optional. If true, displays a rectangle representing the button's boundaries.
+   * @returns True if the mouse cursor is within the button's boundaries, false otherwise.
+   */
+  const buttonCollision = (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    displayRect?: boolean
+  ): boolean => {
     if (displayRect) p.noStroke().fill(255, 0, 0).rect(x, y, w, h)
     return (
       p.mouseX > x - w / 2 &&
@@ -387,7 +480,7 @@ new p5((p: p5) => {
   /* TEST FUNCTIONS */
   /**
    * Renders the graphics of particles, bullets, and drones on the canvas.
-   * 
+   *
    * @param showGrid - Optional parameter to indicate whether to show the grid. Defaults to true.
    * @param graphicToTest - An array of tuples, where each tuple contains a graphic object (Particle, Bullet, or Drone) and a y-coordinate.
    */
@@ -399,16 +492,9 @@ new p5((p: p5) => {
 
     graphicToTest.forEach((one) => {
       p.push()
-      p.translate(
-        300,
-        one[1]
-      )
+      p.translate(300, one[1])
       p.scale(7)
-      one[0].graphic(
-        p,
-        p.color(153, 255, 170),
-        p.frameCount
-      )
+      one[0].graphic(p, p.color(153, 255, 170), p.frameCount)
       p.pop()
     })
 
